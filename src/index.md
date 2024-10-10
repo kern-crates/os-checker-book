@@ -19,11 +19,11 @@ os-checker 由以下部分组成：
 [database]: https://github.com/os-checker/database
 [book]: https://github.com/os-checker/book
 
-os-checker 目前设计为检查 Github 的代码，并且采用 Github Action 进行自动化检查[^ga]。
+os-checker 目前设计为检查 Github 上的仓库代码，并且采用 Github Action 进行自动化检查[^ga]。
 
 [^ga]: 但尚未推出自己的 Github Action Workflow。
 
-# 如何使用？
+# 如何使用
 
 **对于 kern-crates 组织来说，只需改动 [repos.json] 文件，等待 CI 检查完，最后前往 [os-checker.github.io] 网页查看检查结果。**
 
@@ -33,7 +33,7 @@ os-checker 目前设计为检查 Github 的代码，并且采用 Github Action �
 
 如果你对 os-checker 有任何想法，无论关于 WebUI（界面需求） 还是 CLI（集成的检查工具），都可以发起 [讨论][discussions]。
 
-# 配置示例？
+# 配置示例
 
 ```json
 {
