@@ -6,7 +6,7 @@
 
 顶栏目前有 6 个可交互的部件，根据编号依次介绍
 
-1. 主页：即 https://os-checker.github.io ，用于展示仓库诊断数量的树状汇总表格；
+1. 主页：即 [os-checker.github.io](https://os-checker.github.io)，用于展示仓库诊断数量的树状汇总表格；
 2. 问题文件树：展示所有诊断的原始输出，但以 pkg 内的文件树结构展示；
 3. 统计图：展示可视化的统计数据，目前仅显示一个 pass/defect 仓库计数
     * pass 表示诊断数量为 0 的情况，说明没有检查出问题
@@ -22,7 +22,7 @@
 
 ![截图_20241009161254](https://github.com/user-attachments/assets/b2c47a5a-6f6d-41e2-a951-d730da800276)
 
-地址：https://os-checker.github.io
+地址：[os-checker.github.io](https://os-checker.github.io)
 
 按照标注的顺序介绍功能
 1. 仓库计数：pass 表示诊断数量为 0 的仓库数量；total 表示所有被检查的仓库数量；还有一个进度条，它显示 pass/total 计算得到的百分数；
@@ -47,7 +47,7 @@
 
 ![截图_20241009165605](https://github.com/user-attachments/assets/eaf51ee2-1428-44d5-becc-abd27aafdf60)
 
-地址：https://os-checker.github.io/file-tree 或者 `https://os-checker.github.io/{user}/{repo}`
+地址：[os-checker.github.io/file-tree](https://os-checker.github.io/file-tree) 或者 `https://os-checker.github.io/{user}/{repo}`
 
 按编号顺序介绍
 1. 编译目标下拉框：默认展示所有编译目标下的检查输出；点击选择查看某个具体的编译目标的诊断；数字表示诊断数量。
@@ -64,7 +64,7 @@
 
 ![截图_20241009175251](https://github.com/user-attachments/assets/4d0f2771-17d5-4179-8857-710dc933a921)
 
-地址：https://os-checker.github.io/charts
+地址：[os-checker.github.io/charts](https://os-checker.github.io/charts)
 
 目前仅为仓库诊断情况计数，也就是主页进度条在编译目标维度上的可视化：
 * 横坐标为仓库数量：具体划分为 pass （诊断数量为 0） 和 defect （诊断数量不为 0）两种；每个条形图末端有一个标签，显示了合计和通过率。
@@ -74,7 +74,7 @@
 
 # 编译目标明细表
 
-地址：https://os-checker.github.io/target
+地址：[os-checker.github.io/target](https://os-checker.github.io/target)
 
 编译目标是 os-checker 必须明确的一个核心内容，因为每个检查命令由以下部分组成
 
