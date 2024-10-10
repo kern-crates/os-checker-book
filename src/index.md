@@ -33,7 +33,7 @@ os-checker 目前设计为检查 Github 的代码，并且采用 Github Action �
 
 如果你对 os-checker 有任何想法，无论关于 WebUI（界面需求） 还是 CLI（集成的检查工具），都可以发起 [讨论][discussions]。
 
-# 如何添加配置？配置示例？
+# 配置示例？
 
 ```json
 {
