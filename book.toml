@@ -10,8 +10,9 @@ pagetoc = true
 sidebar-width = "180px"
 
 pagetoc-width = "15%"
-content-max-width = "78%"
-content-main-margin-left = "5%"
+content-max-width = "88%"
+content-main-margin-left = "4%"
+content-main-margin-right = "15%"
 
 [output.html]
 default-theme = "light"

@@ -102,6 +102,8 @@ h6:target::before {
     margin-inline-start: auto;
     margin-inline-end: auto;
     max-width: var(--content-max-width);
+    margin-left: 5%;
+    margin-right: 15%;
 }
 .content p { line-height: 1.45em; }
 .content ol { line-height: 1.45em; }
