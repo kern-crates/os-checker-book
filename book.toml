@@ -3,19 +3,19 @@ authors = ["zjp"]
 language = "zh"
 multilingual = false
 src = "src"
-title = "os-checker usage"
+title = "os-checker book"
 
 [preprocessor.theme]
 pagetoc = true
-sidebar-width = "270px"
+sidebar-width = "180px"
 
 pagetoc-width = "15%"
 content-max-width = "78%"
 content-main-margin-left = "5%"
 
 [output.html]
-default-theme = "ayu"
-git-repository-url = "https://github.com/os-checker/help"
+default-theme = "light"
+git-repository-url = "https://github.com/os-checker/os-checker"
 edit-url-template = "https://github.com/os-checker/help/edit/main/{path}"
 additional-css = ["theme/pagetoc.css"]
 additional-js = ["theme/pagetoc.js"]
