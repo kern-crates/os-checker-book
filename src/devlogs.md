@@ -18,3 +18,4 @@
 - [第 9 周](https://github.com/os-checker/os-checker/discussions/90)：处理遗留出错的 18 个仓库；尝试集成 mirai
 - [第 10-11 周](https://github.com/os-checker/os-checker/discussions/104)：WebUI 增加统计图；实现数据库缓存
 - [第 12 周](https://github.com/os-checker/os-checker/discussions/121)：缓存和展示编译目标明细信息
+- [第 13 周](https://github.com/os-checker/os-checker/discussions/136)：编写 WebUI 使用说明；创建 os-checker book 文档；集成 cargo-audit
