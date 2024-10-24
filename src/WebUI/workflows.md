@@ -29,7 +29,7 @@ WebUI 只展现了最重要的一部分；如果有人想尽快看到其他字�
 4. Jobs 统计：每个 Workflow 都直接由 jobs 组成（与 yml 中的 jobs 字段对应），因此可以计算总数；而每个 job 有完成的状态和完成的结果，从而分为 completed 和 success[^success] 维度上的计数；
 5. Steps 统计：每个 job 直接由 steps 组成（与 yml 中的 steps 字段对应）；统计逻辑与 jobs 一致；
 6. Job 的序号：序号从 1 开始，并且红色表示该 job 包含 failure，绿色表示该 job 不含 failure；
-7. Job 的名称：来自 yml 中 jobs 中的 name 字段；点击该名称所在的块元素可以折叠 Job 详情；
+7. Job 的名称：来自 yml 中 jobs 中的 name 字段；点击该名称所在的块元素可以收起和展开 Job 详情；默认收起所有 success Jobs，展开 failure Jobs；
 8. Job 详情：即 Steps 运行情况，每行从左至右为
     * step 的完成结果图标（结果有成功、跳过、失败），并辅助颜色识别；
     * step 的编号，来自 Github（可能存在不连续）；
