@@ -20,3 +20,4 @@
 - [第 12 周](https://github.com/os-checker/os-checker/discussions/121)：缓存和展示编译目标明细信息
 - [第 13 周](https://github.com/os-checker/os-checker/discussions/136)：编写 WebUI 使用说明；创建 os-checker book 文档；集成 cargo-audit
 - [第 14 周](https://github.com/os-checker/os-checker/discussions/145)：集成 RAP 和 cargo-outdated
+- [第 15 周](https://github.com/os-checker/os-checker/discussions/159)：WebUI 增加 Github Actions 页面；给 RAP 提交重构 PR；集成 cargo-geiger；解析 package 和测例信息
