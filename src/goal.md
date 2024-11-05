@@ -120,3 +120,16 @@ Rust 编译器内部才关心的细枝末节，所以专注于编写工具本身
 [charon]: https://github.com/AeneasVerif/charon
 [charon-rudra]: https://github.com/AeneasVerif/charon-rudra
 [charon-thesis]: https://zenodo.org/records/13983686
+
+
+## 其他想法
+
+我持开发态度，因为一开始我并不把 os-checker 局限在检查代码这件事上，而是让它有用这件事情上，所以我希望看到很多有用的信息，并且简化一些流程。
+
+当然，最重要的是使用它，并且持续地完善。
+
+一些基本问题尚未解决：OS 组件库的编译问题，这是长期以来的就认识到的问题，也是当前的主要障碍。完全解决它需要一个个分析组件库，把它调整正确，然后持续地保持它正确。
+
+嗯... 如果在企业中，os-checker 会类似于质量监测和报告系统。
+
+
