@@ -1,6 +1,6 @@
 # 组件化目标
 
-## `os-checker.github.io` 当前构成
+## WebUI 当前构成
 
 > 注意：[kern-crates.github.io] 与 [os-checker.github.io] 是一样的，因此这里只以后者为例。
 
