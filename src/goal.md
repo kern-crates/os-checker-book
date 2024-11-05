@@ -80,4 +80,43 @@ Package 维度需要包含的模块如下：
   * [ ] 更新时间、总提交数量、贡献人数、star/fork/watcher 数量；
   * [x] Github Workflows 运行情况（成功或失败状态，以及明细）；
 
+## 静态分析工具的组件化
 
+这部分并不是当前的工作重点，只是一些可能的想法。
+
+目标：实现统一的静态分析框架，**让新的检查工具编写者专注于编写算法库**，而不是重复编写琐碎的工具逻辑。
+
+背景：
+1. Rust 静态分析工具大多采用 [MIR] 作为基础的分析对象，通过一系列算法，实现某些问题模式的检测来识别代码 bug，帮助编写无 UB 的高质量 Rust 代码。
+2. 获取 MIR 的主要途径是直接与 Rust 编译器的夜间接口交互，这会导致一些麻烦：
+    * 检查工具的编写者需要从复杂的、无良好文档记录的接口中找到程序分析所需的部分，有时数据来自多个地方，需要自行查找多处；
+    * 夜间接口是不稳定的，需要固定一个版本号，这意味着升级版本的障碍会随着时间而增加，因为 API 更改而需要重新查找接口；
+    * 检查工具的编写者需要同时了解 Rust 语言、Rust 编译器和 Cargo，这需要额外的时间，并且在短期内无法做到；
+3. 写一个实用和好用的检查工具，除了程序分析知识和上述 Rust 相关知识，还需要经验的积累和反复的迭代 —— 而检查工具编写者大多以发论文为目的，
+   它们在工程能力上缺乏经验，并且只关注眼前的问题，不了解应用到实际项目上的需求[^1]。
+
+[MIR]: https://blog.rust-lang.org/2016/04/19/MIR.html
+
+[^1]: 比如很少有静态检查工具提供 JSON 格式输出，它们大多只是日志打印；也很少正确处理 Cargo 项目编译，尤其是条件编译；甚至其代码库，都不做到应用 fmt 和 clippy。
+
+组件构成：
+
+* 友好和稳定的数据来源：[charon] 向程序验证提供精简了 MIR 和语义的、与编程语言无关的、**稳定的** JSON 数据格式，支持 CFG 和 AST 两种数据结构。[^charon] 
+  * 主要作者之一是 Nadrieril，他是 Rust 项目成员，资深 Rust 编译器开发者。
+  * 贡献点：charon 尚不支持一些复杂类型（如关联类型）的转换；缺少示例。
+* 程序分析算法库。
+    * 贡献点：
+        * 《[Charon: An Analysis Framework for Rust][charon-thesis]》论文中实现了 [charon-rudra]，成功利用 charon 重写 rudra，因此需要总结一下移植的步骤和经验；
+        * 移植一些现有的检查工具：lockbud、rap；
+        * 直接利用 charon 编写新的工具：参考上述论文有实现一个 taint-checker；
+* 标准化输出格式：基于 JSON 或 SARIF 或诊断 UI 库的数据结构；
+  * 贡献点：对现有检查工具的内部输出格式或相关数据类型进行总结；
+* os-checker：运行并汇集多种检查工具的检查结果；提供 Github Workflows 和 Docker 进行打包、部署和应用。
+
+[^charon]: 概括地说，charon 与 stable MIR 是一个级别的，试图通过稳定的数据结构降低与 rustc 内部的数据结构之间交互的复杂性。但 charon
+的定位是向静态分析工具之类的目标一次提供所有必要的信息（所以 charon 编写了 rustc driver，从而工具编写者无需写这部分，也不必了解
+Rust 编译器内部才关心的细枝末节，所以专注于编写工具本身），而 stable MIR 的目标偏向于作为编写 rustc driver 的工具（写 rustc driver 的人会更需要它）。
+
+[charon]: https://github.com/AeneasVerif/charon
+[charon-rudra]: https://github.com/AeneasVerif/charon-rudra
+[charon-thesis]: https://zenodo.org/records/13983686
