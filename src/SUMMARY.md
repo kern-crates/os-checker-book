@@ -6,6 +6,7 @@
 
 - [WebUI 使用说明](./WebUI.md)
   - [Workflows](./WebUI/workflows.md)
+  - [Info](./WebUI/info.md)
   - [Repos](./WebUI/repos.md)
 
 - [组件化目标](./goal.md)
