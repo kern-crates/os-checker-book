@@ -18,8 +18,9 @@ Github Pages 的 [project site] 功能。
 | [`/charts`]                |    ✅    |              | 仓库通过情况条形图          | [os-checker]        |
 | [`/target`]                |          |      ✅      | 编译目标明细表              | [os-checker]        |
 | [`/workflows`]             |    ✅    |              | Github Actions 运行情况     | [plugin-github-api] |
-| [`/info`]                  |          |      ✅      | Package 基础信息与测例      | [plugin-cargo]      |
-| [`/docs/user/repo/ws/pkg`] |          |      ✅      | 统一自动部署的 Rustdoc 文档 | [docs]      |
+| [`/info`]                  |          |      ✅      | Package 基础信息与测例情况  | [plugin-cargo]      |
+| [`/repos`]                 |    ✅    |              | 仓库情况（基于 Github API） | [plugin-github-api] |
+| [`/docs/user/repo/ws/pkg`] |          |      ✅      | 统一自动部署的 Rustdoc 文档 | [docs]              |
 
 [`/`]: https://os-checker.github.io
 [`/file-tree`]: https://os-checker.github.io/file-tree
@@ -27,6 +28,7 @@ Github Pages 的 [project site] 功能。
 [`/target`]: https://os-checker.github.io/target
 [`/workflows`]: https://os-checker.github.io/workflows
 [`/info`]: https://os-checker.github.io/info
+[`/repos`]: https://os-checker.github.io/repos
 [`/docs/user/repo/ws/pkg`]: https://os-checker.github.io/docs/docs.json
 
 [os-checker]: https://github.com/os-checker/os-checker
@@ -58,9 +60,11 @@ Package 维度需要包含的模块如下：
 * [x] 来自 [docs.json] 的统一自动部署的文档，该文档应根据各 OS 组件仓库的最新提交自动更新构建；如果最新提交导致构建失败，则允许无文档链接；
   * 当前大部分仓库无法正常编译，因此文档无法自动构建；
   * 注意：Cargo.toml 含 documentation 字段，它指向一个最新版本的文档链接（当前为人工填写）；
-* [ ] 测试情况：完全基于自动化来获取和执行测试；但需要考虑实在无法模拟的机器；
-  * [x] 测例名称：因为大部分仓库无法正常编译，仅有部分仓库能获取测例名称；
-  * [ ] 测试结果：😐 尚未开始编写相关代码来运行测试并解析结果；
+* [ ] 测试情况：完全基于自动化来获取和执行测试；
+  * 基于 `cargo test` 的测试
+      * [x] 测例名称：因为大部分仓库无法正常编译，仅有部分仓库能获取测例名称；
+      * [x] 测试结果：运行测试并解析测试结果与耗时；
+  * 自定义测试命令（系统测试）：直接操作机器的库（boot、时钟、驱动、页表等）通常无
 * [ ] 检查工具的诊断结果：
   * [x] 静态检查：目前有 9 个检查工具（12 个检查项），其中真正意义上检查代码内容的工具有 clippy、lockbud、mirai、rap、rudra（5
         个）；目前没有计划再集成更多静态检查工具；
@@ -115,7 +119,7 @@ Package 维度需要包含的模块如下：
 
 [^charon]: 概括地说，charon 与 stable MIR 是一个级别的，试图通过稳定的数据结构降低与 rustc 内部的数据结构之间交互的复杂性。但 charon
 的定位是向静态分析工具之类的目标一次提供所有必要的信息（所以 charon 编写了 rustc driver，从而工具编写者无需写这部分，也不必了解
-Rust 编译器内部才关心的细枝末节，从而专注于编写工具本身），而 stable MIR 的目标偏向于作为编写 rustc driver 的工具（写 rustc driver 的人会更需要它）。
+Rust 编译器内部才关心的细枝末节，从而专注于编写工具本身）。
 
 [charon]: https://github.com/AeneasVerif/charon
 [charon-rudra]: https://github.com/AeneasVerif/charon-rudra
