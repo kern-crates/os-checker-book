@@ -296,17 +296,22 @@ Tracking: [#81](https://github.com/os-checker/os-checker/issues/81)
 }
 ```
 
-### `meta.all_packages`
+### `meta.skip_pkg_dir_globs`
 
-当它为 false 时，对所有 pkgs 禁用检查。
+如果 package 所处的目录符合 glob 条件，那么不检查这个 package。示例：
 
 ```json
 {
-  "user/repo": {
-    "meta": { "all_packages": false }, // 先禁用所有检查
-    "packages": { ... } // 这里罗列的 pkgs 是应该检查的
+  "AsyncModules/embassy-priority": {
+    "meta": {
+      "skip_pkg_dir_globs": [
+        "docs/**",
+        "examples/**",
+        "tests/**"
+      ]
+    }
   }
 }
 ```
 
-见 [#80](https://github.com/os-checker/os-checker/issues/80)
+注意：该 glob 应为仓库根目录的相对路径。
