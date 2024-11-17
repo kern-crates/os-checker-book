@@ -23,3 +23,4 @@
 - [第 15 周](https://github.com/os-checker/os-checker/discussions/159)：WebUI 增加 Github Actions 页面；给 RAP 提交重构 PR；集成 cargo-geiger；解析 package 和测例信息
 - [第 16 周](https://github.com/os-checker/os-checker/discussions/163)：WebUI 增加 info 页面；集成 Rudra；部署在线文档
 - [第 17 周](https://github.com/os-checker/os-checker/discussions/164)：WebUI 添加 repos 页面、实现路由查询；在 kern-crates 组织部署 OS 组件库的 rustdoc 文档和 os-checker 的 WebUI；编写 os-checker 组件化目标文档
+- [第 18 周](https://github.com/os-checker/os-checker/discussions/170)：调整 info 页面 package 的范围；给 RAP 提交修复和新功能；更新 os-checker book 文档；查看 Rust Formal Methods WG/IG 相关资料；WebUI 细微调整
