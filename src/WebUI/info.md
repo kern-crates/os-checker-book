@@ -1,6 +1,6 @@
 # Info
 
-<video width="100%"  controls>
+<video width="100%" controls>
   <source src="https://github.com/user-attachments/assets/c7119225-ff27-45d5-959b-c5de0f463489" type="video/mp4">
 </video>
 
@@ -10,28 +10,50 @@
 
 ## Package 信息
 
-info 页面为 package 维度信息（大部分来自 Cargo.toml），共 15 列：
+info 页面为 package 维度信息（大部分来自 Cargo.toml），共 20 列：
 
-* 版本号 (version)
-* 是否为 lib
-* 是否为 bin
-* 直接依赖的数量
-* 测例数量（由于很多仓库无法直接编译，仅有部分仓库内的 packages 才有这个信息）：
-  * 当所有测例运行成功时，该值为绿色；
-  * 当存在至少一个运行失败的测例时，该值为红色；
-* tests/examples/benches 文件数量
-* 文档链接（来自 documentation 字段）
-* 最新文档链接（来自 os-checker 组织对所有仓库统一生成的在线 rustdoc 文档，基于仓库的最新提交；部分仓库无法编译而暂时无法生成文档；详细列表见 https://os-checker.github.io/docs/docs.json ）
-* 主页链接
-* 类别
-* 关键字
-* 描述
-* 作者
+1. Github 仓库最后一次提交到默认分支的时间 (Last Commit)
+1. 版本号 (Version)
+1. 发布到 crates.io 的版本次数 (crates.io Releases)
+    * 点击该数值，将跳转至该 package 的 crates.io 页面
+1. 最新发布版本到 crates.io 的时间 (Last Release)
+1. 最新发布版本到 crates.io 的压缩包的大小 (Release Size)
+1. os-checker 检查出的诊断数量 (Diagnostics)
+    * 点击该数值，将跳转至该 package 的 os-checker 详情页面
+1. 测例数量 (Test Cases)
+    * 由于很多仓库无法直接编译，仅有部分仓库内的 packages 才有这个信息
+    * 当所有测例运行成功时，该值为绿色
+    * 当存在至少一个运行失败的测例时，该值为红色
+    * 单击该行将查看具体测例的运行情况
+1. 是否为 lib (Lib)
+1. 是否为 bin (Bin)
+1. 直接依赖的数量 (Dependencies)
+1. tests 目录中，测试文件的数量 (Tests)
+1. examples 目录中，示例文件的数量 (Examples)
+1. benches 目录中，基准测试文件的数量 (Benches)
+1. 文档链接 (Doc)
+    * 来自 Cargo.toml 的 documentation 字段
+1. 最新文档链接 (Latest Doc)
+    * 来自 os-checker 组织对所有仓库统一生成的在线 rustdoc 文档，基于仓库的最新提交
+    * 部分仓库无法编译而暂时无法生成文档
+    * 详细列表见 <https://os-checker.github.io/docs/docs.json> 
+1. 主页链接 (Home Page)
+    * 来自 Cargo.toml 的 homepage 字段
+1. 类别 (Categories)
+    * 来自 Cargo.toml 的 categories 字段
+1. 关键字 (Keywords)
+    * 来自 Cargo.toml 的 keywords 字段
+1. 描述 (Description)
+    * 来自 Cargo.toml 的 description 字段
+1. 作者 (Authors)
+    * 来自 Cargo.toml 的 authors 字段
 
 
 ## 测例信息
 
 单击一行，则弹出该 package 的文本信息和测例信息。
+
+文本信息包含文档链接、主页链接、描述、类别、关键字、作者等。
 
 测例信息包含：
 * 测例来自哪个二进制文件 (Binary Name)
@@ -64,10 +86,10 @@ info 页面为 package 维度信息（大部分来自 Cargo.toml），共 15 列
 
 查询条件指：
 
-* 显示列：按照列宽和相似的类型划分
-  * 所有数值型列 (digits)
-  * 所有链接列 (links)：文档、主页
-  * 所有文本信息列(texts)：类别、关键字、描述、作者
+* 显示列：
+  * Full：显示所有列
+  * Default (Slimmed)：默认的、部分列
+  * 20 个列名
 * 类别
 * 关键字
 * 作者
