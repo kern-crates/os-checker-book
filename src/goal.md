@@ -20,7 +20,7 @@ Github Pages 的 [project site] 功能。
 | [`/workflows`]             |    ✅    |              | Github Actions 运行情况     | [plugin-github-api] |
 | [`/info`]                  |          |      ✅      | Package 基础信息与测例情况  | [plugin-cargo]      |
 | [`/repos`]                 |    ✅    |              | 仓库情况（基于 Github API） | [plugin-github-api] |
-| [`/docs/user/repo/ws/pkg`] |          |      ✅      | 统一自动部署的 Rustdoc 文档 | [docs]              |
+| [`/docs/user/repo/ws/pkg`] |          |      ✅      | 统一自动部署的 Rustdoc 文档 | [plugin-docs]       |
 
 [`/`]: https://os-checker.github.io
 [`/file-tree`]: https://os-checker.github.io/file-tree
@@ -34,12 +34,12 @@ Github Pages 的 [project site] 功能。
 [os-checker]: https://github.com/os-checker/os-checker
 [plugin-github-api]: https://github.com/os-checker/plugin-github-api
 [plugin-cargo]: https://github.com/os-checker/plugin-cargo
-[docs]: https://github.com/os-checker/docs
+[plugin-docs]: https://github.com/os-checker/docs
 
 [docs.json]: https://os-checker.github.io/docs/docs.json
 [database]: https://github.com/os-checker/database
 
-Rustdoc 生成的文档也是静态的，[docs] 仓库负责生成所有仓库的文档生成和整合，最终生成 [docs.json]，里面描述了
+Rustdoc 生成的文档也是静态的，[plugin-docs] 仓库负责生成所有仓库的文档生成和整合，最终生成 [docs.json]，里面描述了
 packages 对应的文档地址。
 
 其余工具都通过自动化构建来生成和推送数据至 [database] 仓库 —— 它们是静态的 JSON 数据，任何人也可获取满足其他用途。

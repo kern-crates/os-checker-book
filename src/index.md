@@ -6,14 +6,21 @@
 
 os-checker 由以下部分组成：
 
-| 工具     | 仓库                          | 功能                                            |
-|----------|-------------------------------|-------------------------------------------------|
-| CLI      | [os-checker]                  | 对目标仓库运行一系列检查工具，最终输出检查结果  |
-| WebUI    | [os-checker.github.io][WebUI] | 通过网页应用呈现检查结果，并部署到 Github Pages |
-| database | [database]                    | 存储检查结果数据                                |
-| 文档     | [book]                        | 介绍 os-checker                                 |
+| 工具                  | 仓库                          | 功能                                            |
+|-----------------------|-------------------------------|-------------------------------------------------|
+| os-checker CLI        | [os-checker]                  | 对目标仓库运行一系列检查工具，最终输出检查结果  |
+| plugin-docs CLI       | [plugin-docs]                 | 构建基于仓库最新提交的所有库的 rustdoc 文档     |
+| plugin-cargo CLI      | [plugin-cargo]                | 解析仓库的 cargo 和 git 信息，比如每个包的信息  |
+| plugin-github-api CLI | [plugin-github-api]           | 通过 API 获取仓库在 Github 上的基本信息         |
+| WebUI                 | [os-checker.github.io][WebUI] | 通过网页应用呈现检查结果，并部署到 Github Pages |
+| database              | [database]                    | 存储检查结果和基础信息数据                      |
+| 文档                  | [book]                        | 介绍 os-checker                                 |
 
 [os-checker]: https://github.com/os-checker/os-checker
+[plugin-github-api]: https://github.com/os-checker/plugin-github-api
+[plugin-cargo]: https://github.com/os-checker/plugin-cargo
+[plugin-docs]: https://github.com/os-checker/docs
+
 [WebUI]: https://github.com/os-checker/os-checker.github.io
 [os-checker.github.io]: https://os-checker.github.io
 [database]: https://github.com/os-checker/database
@@ -21,7 +28,7 @@ os-checker 由以下部分组成：
 
 os-checker 目前设计为检查 Github 上的仓库代码，并且采用 Github Action 进行自动化检查[^ga]。
 
-[^ga]: 但尚未推出自己的 Github Action Workflow。
+[^ga]: 但尚未（但计划）推出自己的 Github Action Workflow 和 Docker 镜像，来对上述工具进行自动化部署。
 
 # 如何使用
 
