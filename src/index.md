@@ -6,20 +6,29 @@
 
 os-checker 由以下部分组成：
 
-| 工具                  | 仓库                          | 功能                                            |
-|-----------------------|-------------------------------|-------------------------------------------------|
-| os-checker CLI        | [os-checker]                  | 对目标仓库运行一系列检查工具，最终输出检查结果  |
-| plugin-docs CLI       | [plugin-docs]                 | 构建基于仓库最新提交的所有库的 rustdoc 文档     |
-| plugin-cargo CLI      | [plugin-cargo]                | 解析仓库的 cargo 和 git 信息，比如每个包的信息  |
-| plugin-github-api CLI | [plugin-github-api]           | 通过 API 获取仓库在 Github 上的基本信息         |
-| WebUI                 | [os-checker.github.io][WebUI] | 通过网页应用呈现检查结果，并部署到 Github Pages |
-| database              | [database]                    | 存储检查结果和基础信息数据                      |
-| 文档                  | [book]                        | 介绍 os-checker                                 |
+| 工具                  | 仓库                          | version                                                                                                | 功能                                            |
+|-----------------------|-------------------------------|--------------------------------------------------------------------------------------------------------|-------------------------------------------------|
+| os-checker CLI        | [os-checker]                  | [<img alt="github" src="https://img.shields.io/crates/v/os-checker" height="20">][1]                   | 对目标仓库运行一系列检查工具，最终输出检查结果  |
+| plugin Lib            | [plugin]                      | [<img alt="github" src="https://img.shields.io/crates/v/os-checker-plugin" height="20">][0]            | 构建基于仓库最新提交的所有库的 rustdoc 文档     |
+| plugin-docs CLI       | [plugin-docs]                 | [<img alt="github" src="https://img.shields.io/crates/v/os-checker-plugin-docs" height="20">][2]       | 构建基于仓库最新提交的所有库的 rustdoc 文档     |
+| plugin-cargo CLI      | [plugin-cargo]                | [<img alt="github" src="https://img.shields.io/crates/v/os-checker-plugin-cargo" height="20">][3]      | 解析仓库的 cargo 和 git 信息，比如每个包的信息  |
+| plugin-github-api CLI | [plugin-github-api]           | [<img alt="github" src="https://img.shields.io/crates/v/os-checker-plugin-github-api" height="20">][4] | 通过 API 获取仓库在 Github 上的基本信息         |
+| WebUI                 | [os-checker.github.io][WebUI] |                                                                                                        | 通过网页应用呈现检查结果，并部署到 Github Pages |
+| database              | [database]                    |                                                                                                        | 存储检查结果和基础信息数据                      |
+| 文档                  | [book]                        |                                                                                                        | 介绍 os-checker                                 |
+
+
 
 [os-checker]: https://github.com/os-checker/os-checker
-[plugin-github-api]: https://github.com/os-checker/plugin-github-api
-[plugin-cargo]: https://github.com/os-checker/plugin-cargo
+[1]: https://crates.io/crates/os-checker
+[plugin]: https://github.com/os-checker/plugin
+[0]: https://crates.io/crates/os-checker-plugin
 [plugin-docs]: https://github.com/os-checker/docs
+[2]: https://crates.io/crates/os-checker-docs
+[plugin-cargo]: https://github.com/os-checker/plugin-cargo
+[3]: https://crates.io/crates/os-checker-plugin-cargo
+[plugin-github-api]: https://github.com/os-checker/plugin-github-api
+[4]: https://crates.io/crates/os-checker-plugin-github-api
 
 [WebUI]: https://github.com/os-checker/os-checker.github.io
 [os-checker.github.io]: https://os-checker.github.io
