@@ -17,6 +17,8 @@ os-checker 由以下部分组成：
 | plugin-github-api CLI   | [plugin-github-api]           | [<img alt="github" src="https://img.shields.io/crates/v/os-checker-plugin-github-api" height="20">][4] | 通过 API 获取仓库在 Github 上的基本信息           |
 | WebUI                   | [os-checker.github.io][WebUI] |                                                                                                        | 通过网页应用呈现检查结果，并部署到 Github Pages   |
 | database                | [database]                    |                                                                                                        | 存储检查结果和基础信息数据                        |
+| Github Action Workflow  | [os-checker-action]           |                                                                                                        | 在 Github 仓库 CI 中自动化部署上述工具            |
+| Docker 容器             | [zjpzjp/os-checker]           |                                                                                                        | 基于 Docker 容器自动化部署上述工具                |
 | 文档                    | [book]                        |                                                                                                        | 介绍 os-checker                                   |
 
 
@@ -34,14 +36,17 @@ os-checker 由以下部分组成：
 [plugin-github-api]: https://github.com/os-checker/plugin-github-api
 [4]: https://crates.io/crates/os-checker-plugin-github-api
 
+[os-checker-action]: https://github.com/os-checker/os-checker-action
+[zjpzjp/os-checker]: https://hub.docker.com/repository/docker/zjpzjp/os-checker
+
 [WebUI]: https://github.com/os-checker/os-checker.github.io
 [os-checker.github.io]: https://os-checker.github.io
 [database]: https://github.com/os-checker/database
 [book]: https://github.com/os-checker/book
 
-os-checker 目前设计为检查 Github 上的仓库代码，并且采用 Github Action 进行自动化检查[^ga]。
+os-checker 目前设计为检查 Github 上的仓库代码，并且采用 Github Action 进行自动化检查。
 
-[^ga]: 但尚未（但计划）推出自己的 Github Action Workflow 和 Docker 镜像，来对上述工具进行自动化部署。
+已推出自己的 Github Action Workflow 和 Docker 镜像，来对上述工具进行自动化部署。
 
 # 如何使用
 
