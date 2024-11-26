@@ -6,10 +6,13 @@
 
 - [JSON 配置文件](./config.md)
 
-- [WebUI 使用说明](./WebUI.md)
-  - [Workflows](./WebUI/workflows.md)
-  - [Info](./WebUI/info.md)
-  - [Repos](./WebUI/repos.md)
+- [WebUI 页面](./WebUI.md)
+  - [file-tree](./WebUI/file-tree.md)
+  - [charts](./WebUI/charts.md)
+  - [target](./WebUI/target.md)
+  - [workflows](./WebUI/workflows.md)
+  - [info](./WebUI/info.md)
+  - [repos](./WebUI/repos.md)
 
 - [组件化目标](./goal.md)
 
