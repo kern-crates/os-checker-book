@@ -24,3 +24,6 @@
 - [第 16 周](https://github.com/os-checker/os-checker/discussions/163)：WebUI 增加 info 页面；集成 Rudra；部署在线文档
 - [第 17 周](https://github.com/os-checker/os-checker/discussions/164)：WebUI 添加 repos 页面、实现路由查询；在 kern-crates 组织部署 OS 组件库的 rustdoc 文档和 os-checker 的 WebUI；编写 os-checker 组件化目标文档
 - [第 18 周](https://github.com/os-checker/os-checker/discussions/170)：调整 info 页面 package 的范围；给 RAP 提交修复和新功能；更新 os-checker book 文档；查看 Rust Formal Methods WG/IG 相关资料；WebUI 细微调整
+- [第 19 周]：实现 os-checker 工具集的 Docker 镜像和 Github Action Workflows；在 package 信息表上新增字段；发布所有插件 crates 到 crates.io
+
+[第 19 周]: https://github.com/os-checker/os-checker/discussions/185
