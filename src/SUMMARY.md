@@ -7,6 +7,7 @@
 - [JSON 配置文件](./config.md)
 
 - [自动化部署](./deployment.md)
+  - [Docker 容器](./deployment/docker.md)
 
 - [WebUI 页面](./WebUI.md)
   - [file-tree](./WebUI/file-tree.md)
