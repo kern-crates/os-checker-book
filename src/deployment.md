@@ -19,5 +19,5 @@
 宗旨：运行检查工具的目的是帮助提高代码质量，而搜集基础信息的目的是帮助提高项目质量。
 
 部署方式：
-* Docker 容器：[zjpzjp/os-checker](https://hub.docker.com/repository/docker/zjpzjp/os-checker)
-* Github Action：[os-checker/os-checker-action](https://github.com/os-checker/os-checker-action)
+* Docker 容器：[zjpzjp/os-checker](https://hub.docker.com/repository/docker/zjpzjp/os-checker) | [文档](./deployment/docker.md)
+* Github Action：[os-checker/os-checker-action](https://github.com/os-checker/os-checker-action) | [文档](./deployment/github-action.md)
