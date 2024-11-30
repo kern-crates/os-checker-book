@@ -8,6 +8,7 @@
 
 - [自动化部署](./deployment.md)
   - [Docker 容器](./deployment/docker.md)
+  - [GH Action](./deployment/github-action.md)
 
 - [WebUI 页面](./WebUI.md)
   - [file-tree](./WebUI/file-tree.md)
