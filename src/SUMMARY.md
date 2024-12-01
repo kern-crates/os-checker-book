@@ -12,11 +12,12 @@
 
 - [WebUI 页面](./WebUI.md)
   - [主页](./WebUI/home.md)
+  - [repos](./WebUI/repos.md)
+  - [diagnostics](./WebUI/diagnostics.md)
   - [file-tree](./WebUI/file-tree.md)
   - [charts](./WebUI/charts.md)
   - [target](./WebUI/target.md)
   - [workflows](./WebUI/workflows.md)
-  - [repos](./WebUI/repos.md)
 
 - [组件化目标](./goal.md)
 
