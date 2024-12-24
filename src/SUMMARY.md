@@ -13,6 +13,7 @@
 - [WebUI 页面](./WebUI.md)
   - [主页](./WebUI/home.md)
   - [repos](./WebUI/repos.md)
+  - [testcases](./WebUI/testcases.md)
   - [diagnostics](./WebUI/diagnostics.md)
   - [file-tree](./WebUI/file-tree.md)
   - [charts](./WebUI/charts.md)
