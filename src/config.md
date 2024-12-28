@@ -296,6 +296,8 @@ Tracking: [#81](https://github.com/os-checker/os-checker/issues/81)
 }
 ```
 
+Tracking: [#241](https://github.com/os-checker/os-checker/issues/241)
+
 ### `meta.skip_pkg_dir_globs`
 
 如果 package 所处的目录符合 glob 条件，那么不检查这个 package。示例：
