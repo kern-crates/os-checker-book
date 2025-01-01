@@ -13,7 +13,7 @@ Github Pages 的 [project site] 功能。
 
 | 路径                       | 仓库维度 | Package 维度 | 说明                        | 数据生成的工具      |
 |----------------------------|:--------:|:------------:|-----------------------------|---------------------|
-| [`/info`]                  |          |      ✅      | Package 基础信息            | [plugin-cargo]      |
+| [`/`]                  |          |      ✅      | Package 基础信息            | [plugin-cargo]      |
 | [`/repos`]                 |    ✅    |              | 仓库情况（基于 Github API） | [plugin-github-api] |
 | [`/testcases`]             |          |              | 测例与 Miri 情况            | [plugin-cargo]      |
 | [`/diagnostics`]           |    ✅    |      ✅      | 诊断结果汇总表              | [os-checker]        |
@@ -24,12 +24,13 @@ Github Pages 的 [project site] 功能。
 | [`/docs/user/repo/ws/pkg`] |          |      ✅      | 统一自动部署的 Rustdoc 文档 | [plugin-docs]       |
 
 [`/`]: https://os-checker.github.io
+[`/repos`]: https://os-checker.github.io/repos
+[`/testcases`]: https://os-checker.github.io/testcases
+[`/diagnostics`]: https://os-checker.github.io/diagnostics
 [`/file-tree`]: https://os-checker.github.io/file-tree
 [`/charts`]: https://os-checker.github.io/charts
 [`/target`]: https://os-checker.github.io/target
 [`/workflows`]: https://os-checker.github.io/workflows
-[`/info`]: https://os-checker.github.io/info
-[`/repos`]: https://os-checker.github.io/repos
 [`/docs/user/repo/ws/pkg`]: https://os-checker.github.io/docs/docs.json
 
 [os-checker]: https://github.com/os-checker/os-checker
@@ -51,11 +52,11 @@ packages 对应的文档地址。
 > * 数据存储：[database] 仓库；
 > * 数据展示：[os-checker.github.io] （简称 WebUI）。
 
-## `/info` 页面的组件化思路
+## `/` 页面的组件化思路
 
 （已完成）
 
-目标：[`/info`] 页面需要取代 [`/`] 页面，作为操作系统组件库信息的门户，应该简洁美观，不宜有太复杂的交互逻辑，但应该提供链接跳转至详情页面。
+目标：[`/`] 页面，作为操作系统组件库信息的门户，应该简洁美观，不宜有太复杂的交互逻辑，但应该提供链接跳转至详情页面。
 
 Package 维度需要包含的模块如下：
 
