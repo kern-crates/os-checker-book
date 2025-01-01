@@ -9,10 +9,11 @@ title = "os-checker book"
 pagetoc = true
 sidebar-width = "180px"
 
-pagetoc-width = "15%"
-content-max-width = "88%"
-content-main-margin-left = "4%"
-content-main-margin-right = "15%"
+pagetoc-width = "16%"
+content-max-width = "86%"
+# content-main-margin-left = "4%"
+# content-main-margin-right = "15%"
+# content-margin-inline-start = "20px"
 
 [output.html]
 default-theme = "light"
@@ -21,7 +22,7 @@ edit-url-template = "https://github.com/os-checker/book/edit/main/{path}"
 additional-css = ["theme/pagetoc.css"]
 additional-js = ["theme/pagetoc.js"]
 
-[output.linkcheck] # Michael-F-Bryan/mdbook-linkcheck
+# [output.linkcheck] # Michael-F-Bryan/mdbook-linkcheck
 
 [output.html.fold]
 enable = false
