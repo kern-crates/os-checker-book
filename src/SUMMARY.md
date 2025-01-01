@@ -21,5 +21,6 @@
   - [workflows](./WebUI/workflows.md)
 
 - [组件化目标](./goal.md)
+  - [rap](./checker/rap.md)
 
 - [开发日志](./devlogs.md)
