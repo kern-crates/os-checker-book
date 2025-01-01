@@ -25,5 +25,13 @@
 - [第 17 周](https://github.com/os-checker/os-checker/discussions/164)：WebUI 添加 repos 页面、实现路由查询；在 kern-crates 组织部署 OS 组件库的 rustdoc 文档和 os-checker 的 WebUI；编写 os-checker 组件化目标文档
 - [第 18 周](https://github.com/os-checker/os-checker/discussions/170)：调整 info 页面 package 的范围；给 RAP 提交修复和新功能；更新 os-checker book 文档；查看 Rust Formal Methods WG/IG 相关资料；WebUI 细微调整
 - [第 19 周]：实现 os-checker 工具集的 Docker 镜像和 Github Action Workflows；在 package 信息表上新增字段；发布所有插件 crates 到 crates.io
+- [第 20 周]：重写 kern-crates/.github；WebUI 主页与 info 页面互换；集成 cargo-semver-checks；编写自动化部署文档；阅读/翻译
+- [第 22 周]：初步集成 Miri；WebUI 增加 testcases 页面，展示测试和 Miri 详情
+- [第 23 周]：查看全部有诊断的 143 个仓库的诊断信息，分析和记录产生诊断的原因，并修正部分仓库的 targets 配置
+- [第 24 周]：os-checker 发布 v0.5.0；一些琐事和未完成的事情；年终总结/展望
 
 [第 19 周]: https://github.com/os-checker/os-checker/discussions/185
+[第 20 周]: https://github.com/os-checker/os-checker/discussions/189
+[第 22 周]: https://github.com/os-checker/os-checker/discussions/193
+[第 23 周]: https://github.com/os-checker/os-checker/discussions/225
+[第 24 周]: https://github.com/os-checker/os-checker/discussions/249
