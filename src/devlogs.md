@@ -29,6 +29,8 @@
 - [第 22 周]：初步集成 Miri；WebUI 增加 testcases 页面，展示测试和 Miri 详情
 - [第 23 周]：查看全部有诊断的 143 个仓库的诊断信息，分析和记录产生诊断的原因，并修正部分仓库的 targets 配置
 - [第 24 周]：os-checker 发布 v0.5.0；一些琐事和未完成的事情；年终总结/展望
+- [第 25 周]：给 OS 组件库提交诊断修复；修改 kern-crates/.github 的模板
+- [第 26 周]：给 OS 组件库提交诊断修复；os-checker 更新检查工具和工具链
 
 [第 1-2 周]: https://github.com/os-checker/os-checker/blob/3fdf88db57403949f95c3034608481d64db80764/assets/development-logs.md
 [第 3 周]: https://github.com/os-checker/os-checker/discussions/15
@@ -51,3 +53,5 @@
 [第 22 周]: https://github.com/os-checker/os-checker/discussions/193
 [第 23 周]: https://github.com/os-checker/os-checker/discussions/225
 [第 24 周]: https://github.com/os-checker/os-checker/discussions/249
+[第 25 周]: https://github.com/os-checker/os-checker/discussions/255
+[第 26 周]: https://github.com/os-checker/os-checker/discussions/263
