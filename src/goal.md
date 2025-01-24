@@ -18,7 +18,7 @@ Github Pages 的 [project site] 功能。
 | [`/testcases`]             |          |              | 测例与 Miri 情况            | [plugin-cargo]      |
 | [`/diagnostics`]           |    ✅    |      ✅      | 诊断结果汇总表              | [os-checker]        |
 | [`/file-tree`]             |          |      ✅      | 问题文件树（诊断详情）      | [os-checker]        |
-| [`/charts`]                |    ✅    |              | 仓库通过情况条形图          | [os-checker]        |
+| [`/charts`]                |    ✅    |              | 仓库 0 诊断情况条形图          | [os-checker]        |
 | [`/target`]                |          |      ✅      | 编译目标明细表              | [os-checker]        |
 | [`/workflows`]             |    ✅    |              | Github Actions 运行情况     | [plugin-github-api] |
 | [`/docs/user/repo/ws/pkg`] |          |      ✅      | 统一自动部署的 Rustdoc 文档 | [plugin-docs]       |
