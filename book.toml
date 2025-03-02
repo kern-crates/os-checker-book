@@ -6,7 +6,7 @@ src = "src"
 title = "os-checker book"
 
 [preprocessor.theme]
-pagetoc = true
+pagetoc = false
 sidebar-width = "180px"
 
 pagetoc-width = "16%"
