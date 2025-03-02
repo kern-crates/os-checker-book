@@ -31,6 +31,12 @@
 - [第 24 周]：os-checker 发布 v0.5.0；一些琐事和未完成的事情；年终总结/展望
 - [第 25 周]：给 OS 组件库提交诊断修复；修改 kern-crates/.github 的模板
 - [第 26 周]：给 OS 组件库提交诊断修复；os-checker 更新检查工具和工具链
+- [第 27 周]：kern-crates 组织添加和更新仓库的策略、处理重命名的外部仓库；给 OS 组件库提交诊断修复
+- [第 28 周]：编写 os-checker PPT（面向使用者）；os-checker 在 JSON 配置文件中支持指定 features
+- [第 29-30 周]：初步重构诊断详情页面；PPT 演讲准备完毕
+- [第 31 周]：file-tree 页面添加筛选项来交互式展示诊断详情
+- [第 32 周]：修改 PPT；file-tree 页面支持路由参数查询；testcases 页面添加筛选下拉框查询
+
 
 [第 1-2 周]: https://github.com/os-checker/os-checker/blob/3fdf88db57403949f95c3034608481d64db80764/assets/development-logs.md
 [第 3 周]: https://github.com/os-checker/os-checker/discussions/15
@@ -55,3 +61,8 @@
 [第 24 周]: https://github.com/os-checker/os-checker/discussions/249
 [第 25 周]: https://github.com/os-checker/os-checker/discussions/255
 [第 26 周]: https://github.com/os-checker/os-checker/discussions/263
+[第 27 周]: https://github.com/os-checker/os-checker/discussions/265
+[第 28 周]: https://github.com/os-checker/os-checker/discussions/270
+[第 29-30 周]: https://github.com/os-checker/os-checker/discussions/278
+[第 31 周]: https://github.com/os-checker/os-checker/discussions/284
+[第 32 周]: https://github.com/os-checker/os-checker/discussions/287

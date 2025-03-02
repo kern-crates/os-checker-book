@@ -48,15 +48,24 @@ os-checker 目前设计为检查 Github 上的仓库代码，并且采用 Github
 
 已推出自己的 Github Action Workflow 和 Docker 镜像，来对上述工具进行自动化部署。
 
+更多：[面向使用者的 PPT](https://docs.qq.com/slide/DTEdZdFhMSFR5QVBZ) | [工作原理](./under-the-hood.md)
+
 # 如何使用
 
-**对于 kern-crates 组织来说，只需改动 [repos.json] 文件，等待 CI 检查完，最后前往 [os-checker.github.io] 网页查看检查结果。**
+## 对于 kern-crates
+
+**对于 kern-crates 的组件库，只需改动 [repos.json] 文件，等待 CI 检查完，最后前往 [os-checker.github.io] 网页查看检查结果。**
 
 [repos.json]: https://github.com/os-checker/os-checker/blob/main/assets/repos-ui.json
 
 如果你只想知道自己仓库的原始的检查输出，可查看 `os-checker.github.io/user/repo`，其中 user 为 Github 用户/组织名，repo 为仓库名。
 
 如果你对 os-checker 有任何想法，无论关于 WebUI（界面需求） 还是 CLI（集成的检查工具），都可以发起 [讨论][discussions]。
+
+## 对于其他代码库
+
+1. 选择 [Github Action](./deployment/github-action.md) 或者 [Docker](./deployment/docker.md) 方式，自行部署整个工具集（需要环境变量的配置）
+2. 编写一个 [配置文件](./config.md)
 
 # 配置示例
 
