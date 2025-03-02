@@ -20,6 +20,8 @@
   - [target](./WebUI/target.md)
   - [workflows](./WebUI/workflows.md)
 
+- [工作原理](./under-the-hood.md)
+
 - [组件化目标](./goal.md)
   - [rap](./checker/rap.md)
 
