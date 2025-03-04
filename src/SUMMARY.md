@@ -23,6 +23,7 @@
 - [工作原理](./under-the-hood.md)
 
 - [组件化目标](./goal.md)
+  - [rudra](./checker/rudra.md)
   - [rap](./checker/rap.md)
 
 - [开发日志](./devlogs.md)
