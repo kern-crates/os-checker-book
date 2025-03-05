@@ -92,7 +92,7 @@ Normal: 23/23
 每个测试文件都有一段 TOML 开头的元信息，用来表示该测试属于 Normal/FP/FN，以及预期的诊断类别。示例：
 
 ```toml
-# tests/send_sync/wild_send.rs
+# tests/unsafe_destructor/ffi.rs
 test_type = "normal"
 expected_analyzers = []
 

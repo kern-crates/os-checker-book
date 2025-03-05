@@ -52,3 +52,300 @@ Charon 框架
 ULLBC 和 LLBC 是 Charon 框架为 Rust 分析工具提供的两种表示形式，分别适用于不同的分析需求。 ULLBC 提供了清理后的 MIR 视图，适合基于 CFG 的分析；而 LLBC 则进一步重构为结构化的 AST ，适合需要高级表示的工具。
 
 </details>
+
+## 使用说明
+
+基于 `48d01c5` 提交，而不是最新提交；使用 `nightly-2024-08-11` Rust 工具链。
+
+<details>
+
+<summary><code>charon --help</code></summary>
+
+```bash
+~ $ charon --help
+Usage: charon [OPTIONS]
+
+Options:
+      --ullbc                    Extract the unstructured LLBC (i.e., don’t reconstruct the control-flow)
+      --lib                      Compile the package’s library
+      --bin <BIN>                Compile the specified binary
+      --mir_promoted             Extract the promoted MIR instead of the built MIR
+      --mir_optimized            Extract the optimized MIR instead of the built MIR
+      --crate <CRATE_NAME>       Provide a custom name for the compiled crate (ignore the name computed by Cargo)
+      --input <INPUT_FILE>       The input file (the entry point of the crate to extract). This is needed if you want to define a custom entry point (to only extract part of a crate for instance)
+      --dest <DEST_DIR>          The destination directory. Files will be generated as `<dest_dir>/<crate_name>.{u}llbc`, unless `dest_file` is set. `dest_dir` defaults to the current directory
+      --dest-file <DEST_FILE>    The destination file. By default `<dest_dir>/<crate_name>.llbc`. If this is set we ignore `dest_dir`
+      --polonius                 If activated, use Polonius’ non-lexical lifetimes (NLL) analysis. Otherwise, use the standard borrow checker
+      --no-code-duplication      Check that no code duplication happens during control-flow reconstruction
+                                 of the MIR code.
+
+                                 This is only used to make sure the reconstructed code is of good quality.
+                                 For instance, if we have the following CFG in MIR:
+                                   ```
+                                   b0: switch x [true -> goto b1; false -> goto b2]
+                                   b1: y := 0; goto b3
+                                   b2: y := 1; goto b3
+                                   b3: return y
+                                   ```
+
+                                 We want to reconstruct the control-flow as:
+                                   ```
+                                   if x then { y := 0; } else { y := 1 };
+                                   return y;
+                                   ```
+
+                                 But if we don’t do this reconstruction correctly, we might duplicate
+                                 the code starting at b3:
+                                   ```
+                                   if x then { y := 0; return y; } else { y := 1; return y; }
+                                   ```
+
+                                 When activating this flag, we check that no such things happen.
+
+                                 Also note that it is sometimes not possible to prevent code duplication,
+                                 if the original Rust looks like this for instance:
+                                   ```
+                                   match x with
+                                   | E1(y,_) | E2(_,y) => { ... } // Some branches are "fused"
+                                   | E3 => { ... }
+                                   ```
+
+                                 The reason is that assignments are introduced when desugaring the pattern
+                                 matching, and those assignments are specific to the variant on which we pattern
+                                 match (the `E1` branch performs: `y := (x as E1).0`, while the `E2` branch
+                                 performs: `y := (x as E2).1`). Producing a better reconstruction is non-trivial.
+
+      --extract-opaque-bodies    Usually we skip the bodies of foreign methods and structs with private fields. When this flag is on, we don’t
+      --include <INCLUDE>        Whitelist of items to translate. These use the name-matcher syntax (note: this differs
+                                 a bit from the ocaml NameMatcher).
+
+                                 Note: This is very rough at the moment. E.g. this parses `u64` as a path instead of the
+                                 built-in type. It is also not possible to filter a trait impl (this will only filter
+                                 its methods). Please report bugs or missing features.
+
+                                 Examples:
+                                   - `crate::module1::module2::item`: refers to this item and all its subitems (e.g.
+                                       submodules or trait methods);
+                                   - `crate::module1::module2::item::_`: refers only to the subitems of this item;
+                                   - `core::convert::{impl core::convert::Into<_> for _}`: retrieve the body of this
+                                       very useful impl;
+
+                                 When multiple patterns in the `--include` and `--opaque` options match the same item,
+                                 the most precise pattern wins. E.g.: `charon --opaque crate::module --include
+                                 crate::module::_` makes the `module` opaque (we won’t explore its contents), but the
+                                 items in it transparent (we will translate them if we encounter them.)
+
+      --opaque <OPAQUE>          Blacklist of items to keep opaque. Works just like `--include`, see the doc there.
+      --exclude <EXCLUDE>        Blacklist of items to not translate at all. Works just like `--include`, see the doc there.
+      --hide-marker-traits       Whether to hide the `Sized`, `Sync`, `Send` and `Unpin` marker traits anywhere they show up
+      --no-cargo                 Do not run cargo; instead, run the driver directly
+      --rustc-flag <RUSTC_ARGS>  Extra flags to pass to rustc
+      --cargo-arg <CARGO_ARGS>   Extra flags to pass to cargo. Incompatible with `--no-cargo`
+      --abort-on-error           Panic on the first error. This is useful for debugging
+      --error-on-warnings        Consider any warnings as errors
+      --no-serialize             Don’t serialize the final (U)LLBC to a file.
+      --print-original-ullbc     Print the ULLBC immediately after extraction from MIR.
+      --print-ullbc              Print the ULLBC after applying the micro-passes (before serialization/control-flow reconstruction).
+      --print-built-llbc         Print the LLBC just after we built it (i.e., immediately after loop reconstruction).
+      --print-llbc               Print the final LLBC (after all the cleaning micro-passes).
+      --no-merge-goto-chains     Do not merge the chains of gotos in the ULLBC control-flow graph.
+
+  -h, --help                     Print help
+```
+
+</details>
+
+部分参数介绍：
+* `--print-llbc`：终端打印人类可读的 llbc 格式
+* `--no-cargo --input xx.rs`：只分析单个文件（适合于测试）
+
+# Charon-Rudra
+
+原仓库：<https://github.com/AeneasVerif/charon-rudra>
+
+修改的仓库：<https://github.com/os-checker/charon-rudra>
+
+改动：
+* 复制 rudra 的测例（tests 目录）
+* 将 charon 作为 git 子模块（根据 Cargo.lock，固定了提交）
+* 添加 CI 来进行 API 文档部署（方便查看和引用 charon 的数据结构）
+
+## 安装
+
+以下内容基于我修改的仓库，而不是 charon 或者原始的 charon-rudra 仓库。
+
+```bash
+cd charon/charon
+# Install charon / charon-driver / generate-ml
+cargo install --path . --locked
+
+cd ../..
+# Install cargo-charon-rudra
+cargo install --path . --locked
+```
+
+```bash
+# Linux
+export LD_LIBRARY_PATH="/root/.rustup/toolchains/nightly-2021-10-21-x86_64-unknown-linux-gnu/lib:$LD_LIBRARY_PATH"
+
+# Windows: 将下面的路径添加到系统环境变量（需要重启终端生效）
+# C:\Users\Administrator\.rustup\toolchains\nightly-2024-08-11-x86_64-pc-windows-msvc\lib\rustlib\x86_64-pc-windows-msvc\lib
+```
+
+## 运行测试
+
+```bash
+# Generate insertion_sort.ullbc
+charon --ullbc --no-merge-goto-chains --no-cargo --input tests/panic_safety/insertion_sort.rs
+
+# Analyze with rudra
+cargo-charon-rudra --file insertion_sort.ullbc
+```
+
+## 细节解释
+
+[`CrateData`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/export/struct.CrateData.html
+
+数据结构 [`CrateData`] 对应于 `charon` CLI 在 [crate](https://doc.rust-lang.org/cargo/appendix/glossary.html#crate)
+上生成的 .ullbc 或者 .llbc 文件，它实际上是一个 JSON 文件，内容为：
+
+```rust
+pub struct CrateData {
+    pub charon_version: String,
+    pub translated: TranslatedCrate,
+    pub has_errors: bool,
+}
+```
+
+该 JSON 文件作为通用的数据，可被不同工具和编程语言所使用，比如 [Aeneas] 使用 OCaml 语言进行验证，但数据源通过 charon-ml 解析该 JSON 文件。
+
+### `TranslatedCrate`
+
+[`TranslatedCrate`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/krate/struct.TranslatedCrate.html
+
+[`TranslatedCrate`] 是一个把 Crate 从 MIR 翻译到 LLBC 或者 LLBC 的结果，它是程序分析的基础数据。
+
+| Field              | Type                               | 说明                                                                                                                               |
+|--------------------|------------------------------------|------------------------------------------------------------------------------------------------------------------------------------|
+| crate_name         | `String`                           | 使用者指定的 crate 名称；可能与 rustc 报告的名称不一致                                                                             |
+| real_crate_name    | `String`                           | rustc 报告的 crate 名称                                                                                                            |
+| id_to_file         | `Vector<FileId, FileName>`         | 一组文件路径；根据 id 查找文件；Virtual 映射标准库路径；Local 本地路径；NotReal 适用于宏、query                                    |
+| file_to_id         | `HashMap<FileName, FileId>`        | 根据文件查找 id                                                                                                                    |
+| file_id_to_content | `HashMap<FileId, String>`          | 文件对应的源码；NotReal 没有源码                                                                                                   |
+| all_ids            | `LinkedHashSet<AnyTransId>`        | 所有 ids；按出现的顺序                                                                                                             |
+| item_names         | `HashMap<AnyTransId, Name>`        | 所有注册 id 的 [`Name`]；Name 由多个 PathElem 组成；PathElem 是 Ident 或者 Impl，并携带 `Disambiguator`（为了区分哪个 impl block） |
+| type_decls         | `Vector<TypeDeclId, TypeDecl>`     | 一组类型声明；见 [`TypeDecl`] 和 [`TypeDeclKind`]                                                                                  |
+| fun_decls          | `Vector<FunDeclId, FunDecl>`       | 一组函数声明；见 [`FunDecl`] 和 [`ItemKind`]                                                                                       |
+| global_decls       | `Vector<GlobalDeclId, GlobalDecl>` | 一组全局变量定义；见 [`GlobalDecl`]                                                                                                |
+| bodies             | `Vector<BodyId, Body>`             | 一组函数主体或者常量主体；见 [`Body`]；ULLBC （CFG) 或者 LLBC （AST）                                                              |
+| trait_decls        | `Vector<TraitDeclId, TraitDecl>`   | 一组 trait 声明；见 [`TraitDecl`]                                                                                                  |
+| trait_impl         | `Vector<TraitImplId, TraitImpl>`   | 一组 trait impl 声明；见 [`TraitImpl`]                                                                                             |
+| ordered_decls      | `Option<Vec<DeclarationGroup>>`    | 一组顶级声明，并重新排序；见 [`DeclarationGroup`]                                                                                  |
+
+
+[`Name`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/names/struct.Name.html
+[`TypeDecl`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/types/enum.TypeDeclKind.html
+[`TypeDeclKind`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/types/enum.TypeDeclKind.html
+[`FunDecl`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/gast/struct.FunDecl.html
+[`ItemKind`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/gast/enum.ItemKind.html
+[`GlobalDecl`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/gast/struct.GlobalDecl.html
+[`Body`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/gast/enum.Body.html
+[`TraitDecl`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/gast/struct.TraitDecl.html
+[`TraitImpl`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/gast/struct.TraitImpl.html
+[`DeclarationGroup`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/transform/reorder_decls/enum.DeclarationGroup.html
+
+### `Vector<I, T>`
+
+[`Vector<I, T>`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ids/vector/struct.Vector.html
+
+```rust
+pub struct Vector<I, T>
+where
+    I: Idx,
+{
+    vector: IndexVec<I, Option<T>>,
+    real_len: usize,
+}
+```
+
+其实就是 `Vec<Option<T>>`，但特殊在
+* 索引是包装了 usize 的类型，因为同一个 usize 在 `Vec<A>` 和 `Vec<B>` 上含义不同，因此包装索引来防止误用
+* 每个元素都是 `Option`，会保留 slot 以供将来填充数据；删除元素将把该位置的值设置为 None，但不会调整长度
+* real_len 记录了非 None 元素的数量
+
+使用者通常只保留 I，I 与 usize 大小相同，并且是 Copy 的，然后从 `Vector<I, T>` 中查找真正的数据。
+
+### `Body`
+
+[`Body`] 内部的主要结构如下：
+
+```rust
+pub enum Body {
+    Unstructured(ullbc_ast::ExprBody), // CFG
+    Structured(llbc_ast::ExprBody),    // AST
+}
+
+pub struct GExprBody<T> {
+    pub span: Span,
+    pub arg_count: usize,
+    pub locals: Vector<VarId, Var>,
+    pub comments: Vec<(usize, Vec<String>)>,
+    pub body: T,
+}
+
+// CFG
+pub type ullbc_ast::ExprBody = GExprBody<BodyContents>; 
+pub type BodyContents = Vector<BlockId, BlockData>
+pub struct BlockData {
+    pub statements: Vec<ullbc_ast::RawStatement>,
+    pub terminator: ullbc_ast::Terminator,
+}
+
+// AST
+pub type llbc_ast::ExprBody = GExprBody<Block>;
+pub struct Block {
+    pub span: Span,
+    pub statements: Vec<llbc_ast::RawStatement>,
+}
+```
+
+```rust
+// CFG
+pub enum ullbc_ast::RawStatement {
+    Assign(Place, Rvalue),
+    Call(Call),
+    FakeRead(Place),
+    SetDiscriminant(Place, VariantId),
+    StorageDead(VarId),
+    Deinit(Place),
+    Drop(Place),
+    Assert(Assert),
+    Nop,
+    Error(String),
+}
+pub enum ullbc_ast::RawTerminator {
+    Goto { target: BlockId, },
+    Switch { discr: Operand, targets: SwitchTargets, },
+    Abort(AbortKind),
+    Return,
+}
+
+// AST
+pub enum llbc::RawStatement {
+    Assign(Place, Rvalue),
+    FakeRead(Place),
+    SetDiscriminant(Place, VariantId),
+    Drop(Place),
+    Assert(Assert),
+    Call(Call),
+    Abort(AbortKind),
+    Return,
+    Break(usize),
+    Continue(usize),
+    Nop,
+    Switch(Switch),
+    Loop(Block),
+    Error(String),
+}
+```
+
