@@ -16,15 +16,34 @@ Charon 框架
 * Charon 提供了两种表示形式：ULLBC（无结构低级借用演算）和 LLBC（低级借用演算），分别用于控制流图（CFG）和抽象语法树（AST）的分析。
 * Charon 还支持跨语言的输出格式（如 JSON 和 OCaml），便于不同语言的工具开发者使用。
 
-[案例研究](https://zenodo.org/records/13983686)：通过多个案例研究验证了 Charon 的适用性，包括：
+通过多个案例研究验证了 Charon 的适用性，包括：
 * 常量时间分析：检测加密代码中的侧信道漏洞。
 * Rudra 分析器移植（[charon-rudra]）：将现有的 Rust 静态分析工具 Rudra 重实现到 Charon 上，验证了其有效性。
 * [Aeneas] 验证框架：通过将 Rust 程序转换为纯函数式程序进行验证。
 * [Eurydice] 编译器：将 Rust 编译为 C 语言，以便在不支持 Rust 的环境中使用。
 
+[charon-artifact]: https://zenodo.org/records/13983686
 [charon-rudra]: https://github.com/AeneasVerif/charon-rudra
 [Aeneas]: https://github.com/AeneasVerif/aeneas
 [Eurydice]: https://github.com/AeneasVerif/eurydice
+
+<details>
+
+<summary>charon-artifact</summary>
+
+[charon-artifact.tar.gz][charon-artifact]
+
+This artifact is the companion to the TACAS 25 tool paper submission: "Charon: An Analysis Framework for Rust".
+It contains the different components presented in the paper, namely:
+* The Charon framework
+* A novel implementation of a taint analysis for cryptographic constant-time
+* A reimplementation of Rudra on top of Charon
+* The Aeneas verification framework
+* The Eurydice compiler, relying on Charon to generate C code
+
+To foster reproducibility, this artifact includes a Dockerfile, as well as instructions to use Docker to set up a development environment to reproduce claims in the paper, as well as experiment with the different tools.
+
+</details>
 
 <details>
 
@@ -163,12 +182,29 @@ Options:
 
 原仓库：<https://github.com/AeneasVerif/charon-rudra>
 
-修改的仓库：<https://github.com/os-checker/charon-rudra>
+原 charon-rudra 相比于 rudra 的区别：
+* 数据源从编译器查询 MIR 改为使用 charon 的 ULLBC 文件，这意味着没有与编译器内部 API 交互的代码
+* 仅支持 UnsafeDataflow 分析，其他分析尚未实现（unsafe_destructor、send_sync_variance）
+* 支持了一个额外的测例
+    <details>
+
+    <summary>详情</summary>
+
+    原 Rudra 在 `tests/unsafe_destructor/copy_filter.rs` 测例上未检测出问题，也预期没有分析，但 charon-rudra 报告了问题
+
+    ![](https://github.com/user-attachments/assets/b1f8e258-7488-4864-af33-77e018f09d21)
+
+    </details>
+
+
+---
+
+我修改的仓库：<https://github.com/os-checker/charon-rudra>
 
 改动：
 * 复制 rudra 的测例（tests 目录）
 * 将 charon 作为 git 子模块（根据 Cargo.lock，固定了提交）
-* 添加 CI 来进行 API 文档部署（方便查看和引用 charon 的数据结构）
+* 添加 CI 来进行 [API 文档](https://os-checker.github.io/charon-rudra) 部署（方便查看和引用 charon 的数据结构）
 
 ## 安装
 
@@ -201,6 +237,14 @@ charon --ullbc --no-merge-goto-chains --no-cargo --input tests/panic_safety/inse
 # Analyze with rudra
 cargo-charon-rudra --file insertion_sort.ullbc
 ```
+
+![rudra-report](https://github.com/user-attachments/assets/2b6c04b6-3c5f-4e02-a230-dca6633f2f5b)
+
+颜色解释：
+* Red: strong_bypass_spans
+* Yellow: weak_bypass_spans
+* Cyan: unresolvable_generic_function_spans
+
 
 ## 细节解释
 
@@ -281,8 +325,8 @@ where
 
 ```rust
 pub enum Body {
-    Unstructured(ullbc_ast::ExprBody), // CFG
-    Structured(llbc_ast::ExprBody),    // AST
+    Unstructured(ullbc_ast::ExprBody), // CFG / ULLBC
+    Structured(llbc_ast::ExprBody),    // AST / LLBC
 }
 
 pub struct GExprBody<T> {
@@ -293,7 +337,7 @@ pub struct GExprBody<T> {
     pub body: T,
 }
 
-// CFG
+// CFG / ULLBC
 pub type ullbc_ast::ExprBody = GExprBody<BodyContents>; 
 pub type BodyContents = Vector<BlockId, BlockData>
 pub struct BlockData {
@@ -301,7 +345,7 @@ pub struct BlockData {
     pub terminator: ullbc_ast::Terminator,
 }
 
-// AST
+// AST / LLBC
 pub type llbc_ast::ExprBody = GExprBody<Block>;
 pub struct Block {
     pub span: Span,
@@ -310,7 +354,7 @@ pub struct Block {
 ```
 
 ```rust
-// CFG
+// CFG / ULLBC
 pub enum ullbc_ast::RawStatement {
     Assign(Place, Rvalue),
     Call(Call),
@@ -330,7 +374,7 @@ pub enum ullbc_ast::RawTerminator {
     Return,
 }
 
-// AST
+// AST / LLBC
 pub enum llbc::RawStatement {
     Assign(Place, Rvalue),
     FakeRead(Place),
@@ -348,4 +392,5 @@ pub enum llbc::RawStatement {
     Error(String),
 }
 ```
+
 
