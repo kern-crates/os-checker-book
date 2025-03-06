@@ -1,5 +1,12 @@
 # Charon
 
+<style>
+.TP { font-weight: bold; color: gray; background-color: #fff9ed; padding: 0px 2px; }
+.TN { font-weight: bold; color: green; background-color: #fff9ed; padding: 0px 2px; }
+.FP { font-weight: bold; color: red; background-color: #fff9ed; padding: 0px 2px; }
+.FN { font-weight: bold; color: orange; background-color: #fff9ed; padding: 0px 2px; }
+</style>
+
 ## 工具介绍
 
 仓库：<https://github.com/AeneasVerif/charon>
@@ -7,6 +14,8 @@
 论文：《 [Charon: An Analysis Framework for Rust][paper] 》
 
 [paper]: https://arxiv.org/abs/2410.18042
+
+<img src="https://github.com/user-attachments/assets/2d7cb20e-0deb-4f2e-af9f-a2145ee3591b" style="width: 70%; display: block; margin: auto;">
 
 Charon 框架
 * 目标：Charon 旨在为 Rust 分析工具提供一个通用的、稳定的接口，隐藏底层复杂性，提供一个适合分析的抽象语法树（AST）。
@@ -183,7 +192,7 @@ Options:
 原仓库：<https://github.com/AeneasVerif/charon-rudra>
 
 原 charon-rudra 相比于 rudra 的区别：
-* 数据源从编译器查询 MIR 改为使用 charon 的 ULLBC 文件，这意味着没有与编译器内部 API 交互的代码
+* 数据源从编译器查询 MIR 改为使用 charon 的 ULLBC 文件，这意味着没有与编译器内部 API 交互的代码（比如不需要调用 cargo，也无需驱动 rustc）
 * 仅支持 UnsafeDataflow 分析，其他分析尚未实现（unsafe_destructor、send_sync_variance）
 * 支持了一个额外的测例
     <details>
@@ -235,7 +244,36 @@ export LD_LIBRARY_PATH="/root/.rustup/toolchains/nightly-2021-10-21-x86_64-unkno
 charon --ullbc --no-merge-goto-chains --no-cargo --input tests/panic_safety/insertion_sort.rs
 
 # Analyze with rudra
-cargo-charon-rudra --file insertion_sort.ullbc
+LOG=trace cargo-charon-rudra --file insertion_sort.ullbc
+```
+
+所生成的 ullbc 文件示例： [insertion_sort.json](https://github.com/user-attachments/files/19103374/insertion_sort.json) 文件（后缀名请自行改回 ullbc）。
+
+`LOG=trace` 环境变量让分析过程更加清楚：
+
+```rust
+INFO | [rudra-progress] UnsafeDataflow analysis started
+TRACE| [analysis::unsafe_dataflow] Analyzing fun call: core::slice::{Slice<T>}::len
+
+TRACE| [analysis::unsafe_dataflow] Found call with unresolvable generic parts: core::slice::{Slice<T>}::len (block: 0)
+TRACE| [analysis::unsafe_dataflow] Found unresolvable call to trait method: into_iter (block: 1)
+TRACE| [analysis::unsafe_dataflow] Found unresolvable call to trait method: next (block: 4)
+TRACE| [analysis::unsafe_dataflow] Analyzing fun call: core::ptr::read
+
+TRACE| [analysis::unsafe_dataflow] Found potential strong lifetime bypass: core::ptr::read (block: 10)
+TRACE| [analysis::unsafe_dataflow] Found strong lifetime bypass: core::ptr::read (block: 10)
+TRACE| [analysis::unsafe_dataflow] Found unresolvable call to trait method: gt (block: 16)
+TRACE| [analysis::unsafe_dataflow] Analyzing fun call: core::intrinsics::copy
+
+TRACE| [analysis::unsafe_dataflow] Found potential strong lifetime bypass: core::intrinsics::copy (block: 22)
+TRACE| [analysis::unsafe_dataflow] Found strong lifetime bypass: core::intrinsics::copy (block: 22)
+TRACE| [analysis::unsafe_dataflow] Analyzing fun call: core::ptr::write
+
+TRACE| [analysis::unsafe_dataflow] Found weak lifetime bypass: core::ptr::write (block: 24)
+INFO | [rudra-progress] UnsafeDataflow analysis finished
+Warning (UnsafeDataflow:/ReadFlow/CopyFlow/WriteFlow): Potential unsafe dataflow issue in `insertion_sort::insertion_sort_unsafe`
+-> tests/panic_safety/insertion_sort.rs:10:0-22:1
+// 颜色输出如下图
 ```
 
 ![rudra-report](https://github.com/user-attachments/assets/2b6c04b6-3c5f-4e02-a230-dca6633f2f5b)
@@ -244,6 +282,50 @@ cargo-charon-rudra --file insertion_sort.ullbc
 * Red: strong_bypass_spans
 * Yellow: weak_bypass_spans
 * Cyan: unresolvable_generic_function_spans
+
+## 测例支持程度
+
+
+| 编号 |            类别            | 测例 (tests 目录)                      | Rudra 预期 & 实际分析 | Charon-Rudra 分析 | 对照 |
+|------|:--------------------------:|----------------------------------------|-----------------------|-------------------|:----:|
+| 1    | <span class="TP">TP</span> | panic_safety/insertion_sort.rs         | UnsafeDataflow        | UnsafeDataflow    |      |
+| 2    | <span class="TN">TN</span> | panic_safety/order_safe_if.rs          |                       |                   |      |
+| 3    | <span class="TN">TN</span> | panic_safety/order_safe_loop.rs        |                       |                   |      |
+| 4    | <span class="TN">TN</span> | panic_safety/order_safe.rs             |                       |                   |      |
+| 5    | <span class="TP">TP</span> | panic_safety/order_unsafe_loop.rs      | UnsafeDataflow        | UnsafeDataflow    |      |
+| 7    | <span class="TP">TP</span> | panic_safety/order_unsafe_transmute.rs | UnsafeDataflow        | UnsafeDataflow    |      |
+| 6    | <span class="TP">TP</span> | panic_safety/order_unsafe.rs           | UnsafeDataflow        | UnsafeDataflow    |      |
+| 8    | <span class="FN">FN</span> | panic_safety/pointer_to_ref.rs         |                       |                   |      |
+| 9    | <span class="TP">TP</span> | panic_safety/vec_push_all.rs           | UnsafeDataflow        | UnsafeDataflow    |      |
+| 10   | <span class="TN">TN</span> | send_sync/no_generic.rs                |                       |                   |      |
+| 11   | <span class="FP">FP</span> | send_sync/okay_channel.rs              | SendSyncVariance      |                   |  ❌  |
+| 12   | <span class="TN">TN</span> | send_sync/okay_imm.rs                  |                       |                   |      |
+| 13   | <span class="TN">TN</span> | send_sync/okay_negative.rs             |                       |                   |      |
+| 14   | <span class="TP">TP</span> | send_sync/okay_phantom.rs              | SendSyncVariance      |                   |  ❌  |
+| 15   | <span class="TN">TN</span> | send_sync/okay_ptr_like.rs             |                       |                   |      |
+| 16   | <span class="TN">TN</span> | send_sync/okay_transitive.rs           |                       |                   |      |
+| 17   | <span class="TN">TN</span> | send_sync/okay_where.rs                |                       |                   |      |
+| 18   | <span class="FP">FP</span> | send_sync/sync_over_send_fp.rs         | SendSyncVariance      |                   |  ❌  |
+| 19   | <span class="TP">TP</span> | send_sync/wild_channel.rs              | SendSyncVariance      |                   |  ❌  |
+| 20   | <span class="TP">TP</span> | send_sync/wild_phantom.rs              | SendSyncVariance      |                   |  ❌  |
+| 21   | <span class="TP">TP</span> | send_sync/wild_send.rs                 | SendSyncVariance      |                   |  ❌  |
+| 22   | <span class="TP">TP</span> | send_sync/wild_sync.rs                 | SendSyncVariance      |                   |  ❌  |
+| 23   | <span class="TN">TN</span> | unsafe_destructor/copy_filter.rs       |                       | UnsafeDataflow    |  😀  |
+| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                       |                   |      |
+| 25   | <span class="FP">FP</span> | unsafe_destructor/fp1.rs               | UnsafeDestructor      |                   |  ❌  |
+| 26   | <span class="TN">TN</span> | unsafe_destructor/normal1.rs           |                       |                   |      |
+| 27   | <span class="TP">TP</span> | unsafe_destructor/normal2.rs           | UnsafeDestructor      |                   |  ❌  |
+
+<p style="text-align: center;">对照含义：Charon-Rudra 不支持 = ❌；Charon-Rudra 分析结果不同 = 😀</p>
+
+|            类别            | 全称           | 含义                    | Rudra 测例数量 |
+|:--------------------------:|----------------|-------------------------|----------------|
+| <span class="TP">TP</span> | True Positive  | 有问题 - 且报告         | 11             |
+| <span class="TN">TN</span> | True Negative  | 无问题 - 不报告         | 12             |
+| <span class="FP">FP</span> | False Positive | 无问题 - 但报告（误报） | 3              |
+| <span class="FN">FN</span> | False Negative | 有问题 - 不报告（漏报） | 1              |
+
+<p style="text-align: center;">Positive = 报告；Negative = 不报告</p>
 
 
 ## 细节解释
