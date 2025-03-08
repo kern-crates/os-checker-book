@@ -2,7 +2,36 @@
 
 Rudra 仓库： <https://github.com/sslab-gatech/Rudra>
 
-Charon-Rudra 仓库： <https://github.com/AeneasVerif/charon-rudra> （Charon 重写 Rudra 数据源）
+Charon-Rudra 仓库： <https://github.com/AeneasVerif/charon-rudra> （Charon 重写 Rudra 数据源，但未真正实现算法）
+
+## 算法
+
+### Unsafe Dataflow
+
+* unresolvable function: a function whose definitions can't be found without precise type parameters （必须使用精确类型参数才能找到声明的函数）
+  * `Vec::<T>::push` 不是 unresolvable function，因为它的实现针对所有 T
+  * `<reader as Read>::read()` 是 unresolvable function，因为必须知道 reader 的类型才能找到实现
+* The algorithm models six classes of lifetime bypasses:
+  * coarse-grained taint tracking to identify panic safety bugs and higher-order invariant bugs 
+  * adjustable precision
+
+|   | precision | lifetime bypass      | explanation                            | e.g.               |
+|:-:|-----------|----------------------|----------------------------------------|--------------------|
+| 1 | high      | uninitialized values | creating uninitialized values          | `Vec::set_len()`   |
+| 2 | medium    | duplicate            | duplicating the lifetime of objects    | `ptr::read()`      |
+| 3 | medium    | write                | overwriting the memory of a value      | `ptr::write()`     |
+| 4 | medium    | copy                 | memcpy()-like buffer copy              | `ptr::copy()`      |
+| 5 | low       | transmute            | reinterpreting a type and its lifetime | `mem::transmute()` |
+| 6 | low       | ptr-to-ref           | converting a pointer to a reference    |                    |
+
+<details>
+
+<summary> Algorithm 1: Checking unsafe dataflow </summary>
+
+<img src="https://github.com/user-attachments/assets/2ef911c9-e826-4761-925a-089c25d293a4" width="50%" style="display:block;margin:auto;">
+
+</details>
+
 
 ## Rudra 仓库
 
