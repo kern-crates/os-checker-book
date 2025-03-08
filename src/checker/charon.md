@@ -279,12 +279,31 @@ Warning (UnsafeDataflow:/ReadFlow/CopyFlow/WriteFlow): Potential unsafe dataflow
 ![rudra-report](https://github.com/user-attachments/assets/2b6c04b6-3c5f-4e02-a230-dca6633f2f5b)
 
 颜色解释：
-* Red: strong_bypass_spans
-* Yellow: weak_bypass_spans
-* Cyan: unresolvable_generic_function_spans
+* Red: lifetime bypass of high precision
+  * `Vec::set_len`
+  * `Vec::from_raw_parts`
+* Yellow: lifetime bypass of median precision 
+  * Read Flow: `ptr::read`、 `ptr::const_ptr::_::read`
+  * Copy Flow: `intrinsics::copy`、 `intrinsics::copy_nonoverlapping`
+  * Write Flow: `ptr::write`、 `ptr::mut_ptr::_::write`
+* Cyan: lifetime bypass of low precision
+  * TRANSMUTE: `intrinsics::transmute`
+  * PTR_AS_REF: `ptr::const_ptr::_::as_ref`、 `ptr::non_nul::_::as_ref`
+  * SLICE_UNCHECKED
+  * SLICE_FROM_RAW
+
+此外，内部还区分 strong_bypass_spans、weak_bypass_spans、unresolvable_generic_function_spans。
 
 ## 测例支持程度
 
+Rudra 实现了三种分析
+* UnsafeDataflow：基于 taint analysis 
+* UnsafeDestructor
+* SendSyncVariance
+
+我分析了 Charon-Rudra 源代码，发现它相当不完善，只是移植了数据源，但没有重建 Rudra 的算法/功能：
+* 它只是把单个函数内部的调用标注了污点，但没有沿着调用往下分析 —— 我猜测它只是应用了 Charon 数据源，然后完成了污点报告，没有真正实现 Rudra 的污点分析
+* 它只是实现了 UnsafeDataflow 分析的基础部分（算法未完全实现，但应该可以补全），而且没有实现另外两个分析（尚不知道重现 SendSyncVariance 分析是否可行）
 
 | 编号 |            类别            | 测例 (tests 目录)                      | Rudra 预期 & 实际分析 | Charon-Rudra 分析 | 对照 |
 |------|:--------------------------:|----------------------------------------|-----------------------|-------------------|:----:|
