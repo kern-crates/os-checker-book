@@ -2,7 +2,7 @@
 
 Rudra 仓库： <https://github.com/sslab-gatech/Rudra>
 
-Charon-Rudra 仓库： <https://github.com/AeneasVerif/charon-rudra> （Charon 重写 Rudra 数据源，但未真正实现算法）
+Charon-Rudra 仓库： <https://github.com/AeneasVerif/charon-rudra> （Charon 重写 Rudra 数据源）
 
 ## 算法
 
