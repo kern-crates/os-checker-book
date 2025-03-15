@@ -45,16 +45,6 @@ cd Rudra
 cargo install --path . --locked
 ```
 
-此外，使用 Rust-Analyzer 时，还需要进行以下步骤
-1. 安装与 rudra 指定的 Rust 工具链配套的 RA：`rustup component add rust-analyzer-preview`
-    * 这与目前的命令不同，rust-analyzer-preview 已经改名为 rust-analyzer
-2. 在 RA 的配置文件中指定 `rustcSource = "discover"`
-    * 这与目前的命令不同，`rustc.source = "discover"` 是现在的配置
-3. 在 Cargo.toml 中添加 `[package.metadata.rust-analyzer] rustc_private = true`
-    * 与当前相同
-
-只需要遵循数字序号的步骤；但配置可能随时间发生变化，处于对比，我给了目前的配置。
-
 <details>
 
 <summary>
@@ -70,6 +60,25 @@ Caused by:
 ```
 
 </details>
+
+### 开发技巧
+
+在固定工具链上使用 Rust-Analyzer 时，还需要进行以下步骤
+1. 安装与 rudra 指定的 Rust 工具链配套的 RA：`rustup component add rust-analyzer-preview`
+    * 这与目前的命令不同，rust-analyzer-preview 已经改名为 rust-analyzer
+2. 在 RA 的配置文件中指定 `rustcSource = "discover"`
+    * 这与目前的命令不同，`rustc.source = "discover"` 是现在的配置
+3. 在 Cargo.toml 中添加 `[package.metadata.rust-analyzer] rustc_private = true`
+    * 与当前相同
+4. RA 对某些方法调用可能并不能给出提示，因此最好搭配 rustc 的 API 文档查看。使用 `rustup component add rustc-docs`
+   命令安装工具链配套的 API 文档到本地。
+    * 如果遇到 `detected conflict: share/doc/rust/html/rustc` 错误，应该删除
+      `~/.rustup/toolchains/nightly-2021-10-21-x86_64-unknown-linux-gnu/share/doc/rust/html/rustc` 目录，具体解释见[此链接](share/doc/rust/html/rustc)。
+    * 对于固定工具链，不要参考官方网站的[最新 API 文档](https://doc.rust-lang.org/nightly/nightly-rustc/)，因为它和历史的 API 可能不同。
+
+只需要遵循数字序号的步骤；但配置可能随时间发生变化，为了对比，我在每个步骤下方给了目前的配置。
+
+警告：数字序号仅针对 Rudra，它使用 nightly-2021-10-21 工具链；对于比较新的工具链，应查看目前配置。
 
 ### 运行测试
 
