@@ -494,4 +494,73 @@ pub enum llbc::RawStatement {
 }
 ```
 
+## UnsafeDataflow
 
+如果我用白话概括 Rudra 的 UnsafeDataflow 分析的话，它是这样的：
+1. 查看函数体的 CFG （控制流图）
+2. 对某些固定的“危险”调用标记为“入口” (source)
+3. 对 drop_in_place 和泛型函数标记为“出口” (sink)
+4. 从入口点的污染状态开始，沿着执行流标记污染状态，直至函数返回
+5. 如果出口具有污染状态，那么认为该函数具有 UnsafeDataflow
+
+一些细节补充：
+* 只有入口或者只有出口的函数不被认为具有 UnsafeDataflow
+* 我描述的“执行流”与代码实现并不相同，代码实现中以 basic block 作为标记对象
+  * basic block（缩写 bb）是 [MIR] 中的节点，只在末尾可能多个 successor，但内部每个语句只有一个 successor
+  * 这样做的潜在风险是，由于标记的原因是某个函数调用语句，但标记的对象扩大到一个 bb，那么当 source 和 sink 处于同一个
+    bb，但 sink 在 source 之前执行，那么这会导致一种误报（见下面的差异）
+
+[MIR]: https://rustc-dev-guide.rust-lang.org/mir/
+
+### 与 Rudra 的差异
+
+Charon-Rudra 和 Rudra 在 UnsafeDataflow 在算法上没有区别，因此数据源决定分析结果的差异。
+
+在污点分析中，如何定义 unresolvable function 决定了在哪些函数上标记 sink。
+
+通过阅读 Rudra 在 [`analyze`] 函数的代码，可知识别 unresolvable 函数的关键是 rustc 内部的 [`Instance::resolve`] 函数的返回结果：
+
+[`analyze`]: https://github.com/sslab-gatech/Rudra/blob/6ca6c6218e1a0126ab61f1825f5060d4d10c8cf3/src/analysis/unsafe_dataflow.rs#L233-L235
+[`Instance::resolve`]: https://os-checker.github.io/Rudra/rustc/rustc_middle/ty/instance/struct.Instance.html#method.resolve
+
+* `Ok(None)` 表示无法解析到具体的实例，例如 `fn foo<T: Debug>(t: T)`
+* `Ok(Some(instance))` 表示在通过 coherence 和 type-check 之后，在单态化上下文中调用，则保证返回它
+* `Err(_)` 则表示在其他地方出现了错误，而无法完成实例解析
+
+但是，对于以下函数调用，Rudra 未能标识 f 具有 UnsafeDataflow，因为 [`Instance::resolve`] 函数对 `inner` 调用的解析结果为
+`Ok(Some(_))`，这与 rustc API 自己记录的内容不符。
+
+而 Charon 识别 unresolvable 函数的方式是查看函数携带泛型类型参数，认为 `inner` 函数是 unresolvable 的，从而标识 f 具有 UnsafeDataflow。
+
+```rust
+// Warning (UnsafeDataflow:/WriteFlow): Potential unsafe dataflow issue in `f`
+fn f<T: Debug>(a: T, b: T, f: &mut Formatter<'_>) {
+    unsafe { std::ptr::write(0 as _, a) }; // 👈 Write Flow
+    inner(b, f); // 👈 Unresolvable Generic Function: 但 Rudra 调用 rustc API 的方式认为该泛型函数已解析实例
+}
+
+fn inner<T: Debug>(b: T, f: &mut Formatter<'_>) {
+    b.fmt(f);
+}
+```
+
+为了对比 Rudra 在这个例子上的奇怪之处，当你把 inner 函数手动内联，会发现 Rudra “成功”标识 f 具有 UnsafeDataflow。
+
+```rust
+fn f<T: Debug>(a: T, b: T, f: &mut Formatter<'_>) {
+    unsafe { std::ptr::write(0 as _, a) }; // 👈 Write Flow
+    b.fmt(f); // 👈 Unresolvable Generic Function
+}
+```
+
+此外，通常不影响分析结果，但可能导致一种误报的数据差异是，Rudra 在 basic block (bb) 上切分地很细，可能一个函数调用就是一个
+bb，而 Charon 把正常的执行流划分到一个 bb 内，在 switch、goto、return 之类的控制流上产生另一个 bb。不确定这是由于
+Rust 编译器版本导致的差异，还是 charon 自己合并和清理导致的差异（虽然其论文确实明确提到这一点）。但最终我们会看到分析结果不同：
+
+```rust
+// Charon-Rudra 报告 UnsafeDataflow:/WriteFlow，但 Rudra 并没报告
+fn f<T: Debug>(a: T, f: &mut Formatter<'_>) {
+    a.fmt(f); // Sink: Unresolvable
+    unsafe { std::ptr::write(0 as _, a) }; // Source: Write Flow
+}
+```
