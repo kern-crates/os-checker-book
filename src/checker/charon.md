@@ -305,35 +305,35 @@ Rudra 实现了三种分析
 * 它只是把单个函数内部的调用标注了污点，但没有沿着调用往下分析
 * 它只是实现了 UnsafeDataflow 分析的基础部分（算法未完全实现，但应该可以补全），而且没有实现另外两个分析（尚不知道重现 SendSyncVariance 分析是否可行）
 
-| 编号 |            类别            | 测例 (tests 目录)                      | Rudra 预期 & 实际分析 | Charon-Rudra 分析 | 对照 |
-|------|:--------------------------:|----------------------------------------|-----------------------|-------------------|:----:|
-| 1    | <span class="TP">TP</span> | panic_safety/insertion_sort.rs         | UnsafeDataflow        | UnsafeDataflow    |      |
-| 2    | <span class="TN">TN</span> | panic_safety/order_safe_if.rs          |                       |                   |      |
-| 3    | <span class="TN">TN</span> | panic_safety/order_safe_loop.rs        |                       |                   |      |
-| 4    | <span class="TN">TN</span> | panic_safety/order_safe.rs             |                       |                   |      |
-| 5    | <span class="TP">TP</span> | panic_safety/order_unsafe_loop.rs      | UnsafeDataflow        | UnsafeDataflow    |      |
-| 7    | <span class="TP">TP</span> | panic_safety/order_unsafe_transmute.rs | UnsafeDataflow        | UnsafeDataflow    |      |
-| 6    | <span class="TP">TP</span> | panic_safety/order_unsafe.rs           | UnsafeDataflow        | UnsafeDataflow    |      |
-| 8    | <span class="FN">FN</span> | panic_safety/pointer_to_ref.rs         |                       |                   |      |
-| 9    | <span class="TP">TP</span> | panic_safety/vec_push_all.rs           | UnsafeDataflow        | UnsafeDataflow    |      |
-| 10   | <span class="TN">TN</span> | send_sync/no_generic.rs                |                       |                   |      |
-| 11   | <span class="FP">FP</span> | send_sync/okay_channel.rs              | SendSyncVariance      |                   |  ❌  |
-| 12   | <span class="TN">TN</span> | send_sync/okay_imm.rs                  |                       |                   |      |
-| 13   | <span class="TN">TN</span> | send_sync/okay_negative.rs             |                       |                   |      |
-| 14   | <span class="TP">TP</span> | send_sync/okay_phantom.rs              | SendSyncVariance      |                   |  ❌  |
-| 15   | <span class="TN">TN</span> | send_sync/okay_ptr_like.rs             |                       |                   |      |
-| 16   | <span class="TN">TN</span> | send_sync/okay_transitive.rs           |                       |                   |      |
-| 17   | <span class="TN">TN</span> | send_sync/okay_where.rs                |                       |                   |      |
-| 18   | <span class="FP">FP</span> | send_sync/sync_over_send_fp.rs         | SendSyncVariance      |                   |  ❌  |
-| 19   | <span class="TP">TP</span> | send_sync/wild_channel.rs              | SendSyncVariance      |                   |  ❌  |
-| 20   | <span class="TP">TP</span> | send_sync/wild_phantom.rs              | SendSyncVariance      |                   |  ❌  |
-| 21   | <span class="TP">TP</span> | send_sync/wild_send.rs                 | SendSyncVariance      |                   |  ❌  |
-| 22   | <span class="TP">TP</span> | send_sync/wild_sync.rs                 | SendSyncVariance      |                   |  ❌  |
-| 23   | <span class="TN">TN</span> | unsafe_destructor/copy_filter.rs       |                       | UnsafeDataflow    |  😀  |
-| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                       |                   |      |
-| 25   | <span class="FP">FP</span> | unsafe_destructor/fp1.rs               | UnsafeDestructor      |                   |  ❌  |
-| 26   | <span class="TN">TN</span> | unsafe_destructor/normal1.rs           |                       |                   |      |
-| 27   | <span class="TP">TP</span> | unsafe_destructor/normal2.rs           | UnsafeDestructor      |                   |  ❌  |
+| 编号 |            类别            | 测例 (tests 目录)                      | Rudra 预期 & 实际分析 | Charon-Rudra 分析  | 对照 |
+|------|:--------------------------:|----------------------------------------|-----------------------|--------------------|:----:|
+| 1    | <span class="TP">TP</span> | panic_safety/insertion_sort.rs         | UnsafeDataflow        | UnsafeDataflow     |      |
+| 2    | <span class="TN">TN</span> | panic_safety/order_safe_if.rs          |                       |                    |      |
+| 3    | <span class="TN">TN</span> | panic_safety/order_safe_loop.rs        |                       |                    |      |
+| 4    | <span class="TN">TN</span> | panic_safety/order_safe.rs             |                       |                    |      |
+| 5    | <span class="TP">TP</span> | panic_safety/order_unsafe_loop.rs      | UnsafeDataflow        | UnsafeDataflow     |      |
+| 7    | <span class="TP">TP</span> | panic_safety/order_unsafe_transmute.rs | UnsafeDataflow        | UnsafeDataflow     |      |
+| 6    | <span class="TP">TP</span> | panic_safety/order_unsafe.rs           | UnsafeDataflow        | UnsafeDataflow     |      |
+| 8    | <span class="FN">FN</span> | panic_safety/pointer_to_ref.rs         |                       |                    |      |
+| 9    | <span class="TP">TP</span> | panic_safety/vec_push_all.rs           | UnsafeDataflow        | UnsafeDataflow     |      |
+| 10   | <span class="TN">TN</span> | send_sync/no_generic.rs                |                       |                    |      |
+| 11   | <span class="FP">FP</span> | send_sync/okay_channel.rs              | SendSyncVariance      |                    |  ❌  |
+| 12   | <span class="TN">TN</span> | send_sync/okay_imm.rs                  |                       |                    |      |
+| 13   | <span class="TN">TN</span> | send_sync/okay_negative.rs             |                       |                    |      |
+| 14   | <span class="TP">TP</span> | send_sync/okay_phantom.rs              | SendSyncVariance      |                    |  ❌  |
+| 15   | <span class="TN">TN</span> | send_sync/okay_ptr_like.rs             |                       |                    |      |
+| 16   | <span class="TN">TN</span> | send_sync/okay_transitive.rs           |                       |                    |      |
+| 17   | <span class="TN">TN</span> | send_sync/okay_where.rs                |                       |                    |      |
+| 18   | <span class="FP">FP</span> | send_sync/sync_over_send_fp.rs         | SendSyncVariance      |                    |  ❌  |
+| 19   | <span class="TP">TP</span> | send_sync/wild_channel.rs              | SendSyncVariance      |                    |  ❌  |
+| 20   | <span class="TP">TP</span> | send_sync/wild_phantom.rs              | SendSyncVariance      |                    |  ❌  |
+| 21   | <span class="TP">TP</span> | send_sync/wild_send.rs                 | SendSyncVariance      |                    |  ❌  |
+| 22   | <span class="TP">TP</span> | send_sync/wild_sync.rs                 | SendSyncVariance      |                    |  ❌  |
+| 23   | <span class="TN">TN</span> | unsafe_destructor/copy_filter.rs       |                       | ~~UnsafeDataflow~~ |      |
+| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                       |                    |      |
+| 25   | <span class="FP">FP</span> | unsafe_destructor/fp1.rs               | UnsafeDestructor      |                    |  ❌  |
+| 26   | <span class="TN">TN</span> | unsafe_destructor/normal1.rs           |                       |                    |      |
+| 27   | <span class="TP">TP</span> | unsafe_destructor/normal2.rs           | UnsafeDestructor      |                    |  ❌  |
 
 <p style="text-align: center;">对照含义：Charon-Rudra 不支持 = ❌；Charon-Rudra 分析结果不同 = 😀</p>
 
@@ -346,6 +346,9 @@ Rudra 实现了三种分析
 
 <p style="text-align: center;">Positive = 报告；Negative = 不报告</p>
 
+
+注：`copy_filter.rs` 测例由我在 [dcda8f7](https://github.com/os-checker/charon-rudra/commit/dcda8f74bbba25446da936b08f75b917ce8c0f97)
+提交中修复，原因是原 Charon-Rudra 对泛型尚未检查 Copy bound。
 
 ## 细节解释
 
@@ -494,4 +497,96 @@ pub enum llbc::RawStatement {
 }
 ```
 
+## UnsafeDataflow
 
+如果我用白话概括 Rudra 的 UnsafeDataflow 分析的话，它是这样的：
+1. 查看函数体的 CFG （控制流图）
+2. 对某些固定的“危险”调用标记为“入口” (source)
+3. 对 drop_in_place 和泛型函数标记为“出口” (sink)
+4. 从入口点的污染状态开始，沿着执行流标记污染状态，直至函数返回
+5. 如果出口具有污染状态，那么认为该函数具有 UnsafeDataflow
+
+一些细节补充：
+* 只有入口或者只有出口的函数不被认为具有 UnsafeDataflow
+* 我描述的“执行流”与代码实现并不相同，代码实现中以 basic block 作为标记对象
+  * basic block（缩写 bb）是 [MIR] 中的节点，只在末尾可能多个 successor，但内部每个语句只有一个 successor
+  * 这样做的潜在风险是，由于标记的原因是某个函数调用语句，但标记的对象扩大到一个 bb，那么当 source 和 sink 处于同一个
+    bb，但 sink 在 source 之前执行，那么这会导致一种误报（见下面的差异）
+
+[MIR]: https://rustc-dev-guide.rust-lang.org/mir/
+
+### 与 Rudra 的差异
+
+Charon-Rudra 和 Rudra 在 UnsafeDataflow 在算法上没有区别，因此数据源决定分析结果的差异。
+
+在污点分析中，如何定义 unresolvable function 决定了在哪些函数上标记 sink。
+
+通过阅读 Rudra 在 [`analyze`] 函数的代码，可知识别 unresolvable 函数的关键是 rustc 内部的 [`Instance::resolve`] 函数的返回结果：
+
+[`analyze`]: https://github.com/sslab-gatech/Rudra/blob/6ca6c6218e1a0126ab61f1825f5060d4d10c8cf3/src/analysis/unsafe_dataflow.rs#L233-L235
+[`Instance::resolve`]: https://os-checker.github.io/Rudra/rustc/rustc_middle/ty/instance/struct.Instance.html#method.resolve
+
+* `Ok(None)` 表示无法解析到具体的实例，例如 `fn foo<T: Debug>(t: T)`
+* `Ok(Some(instance))` 表示在通过 coherence 和 type-check 之后，在单态化上下文中调用，则保证返回它
+* `Err(_)` 则表示在其他地方出现了错误，而无法完成实例解析
+
+但是，对于以下函数调用，Rudra 未能标识 f 具有 UnsafeDataflow，因为 [`Instance::resolve`] 函数对 `inner` 调用的解析结果为
+`Ok(Some(_))`，这与 rustc API 自己记录的内容不符。
+
+而 Charon 识别 unresolvable 函数的方式是查看函数携带泛型类型参数，认为 `inner` 函数是 unresolvable 的，从而标识 f 具有 UnsafeDataflow。
+
+```rust
+// Warning (UnsafeDataflow:/WriteFlow): Potential unsafe dataflow issue in `f`
+fn f<T: Debug>(a: T, b: T, f: &mut Formatter<'_>) {
+    unsafe { std::ptr::write(0 as _, a) }; // 👈 Write Flow
+    inner(b, f); // 👈 Unresolvable Generic Function: 但 Rudra 调用 rustc API 的方式认为该泛型函数已解析实例
+}
+
+fn inner<T: Debug>(b: T, f: &mut Formatter<'_>) {
+    b.fmt(f);
+}
+```
+
+为了对比 Rudra 在这个例子上的奇怪之处，当你把 inner 函数手动内联，会发现 Rudra “成功”标识 f 具有 UnsafeDataflow。
+
+```rust
+fn f<T: Debug>(a: T, b: T, f: &mut Formatter<'_>) {
+    unsafe { std::ptr::write(0 as _, a) }; // 👈 Write Flow
+    b.fmt(f); // 👈 Unresolvable Generic Function
+}
+```
+
+此外，通常不影响分析结果，但可能导致一种误报的数据差异是，Rudra 在 basic block (bb) 上切分地很细，可能一个函数调用就是一个
+bb，而 Charon 把正常的执行流划分到一个 bb 内，在 switch、goto、return 之类的控制流上产生另一个 bb。不确定这是由于
+Rust 编译器版本导致的差异，还是 charon 自己合并和清理导致的差异（虽然其论文确实明确提到这一点）。但最终我们会看到分析结果不同：
+
+```rust
+// Charon-Rudra 报告 UnsafeDataflow:/WriteFlow，但 Rudra 并没报告
+fn f<T: Debug>(a: T, f: &mut Formatter<'_>) {
+    a.fmt(f); // Sink: Unresolvable
+    unsafe { std::ptr::write(0 as _, a) }; // Source: Write Flow
+}
+```
+
+## UnsafeDestructor
+
+算法相当简单和直观，Rudra 只做了两件事：
+1. 查找当前 crate 中定义的所有 Drop impls
+    * 主要通过 rustc 的 [`lang_items`]、 [`all_local_trait_impls`] 等 API
+2. 查看这些 drop 函数是否存在 unsafe block，然后报告它
+    * 主要在 HIR 层通过 rustc 的 [`Visitor::visit_block`] hook 遍历查找 unsafe block
+    * 此外，Rudra 通过 [`is_foreign_item`] API 排除了 extern unsafe function
+
+[`lang_items`]: https://os-checker.github.io/Rudra/rustc/rustc_middle/ty/context/struct.TyCtxt.html#method.lang_items
+[`all_local_trait_impls`]: https://os-checker.github.io/Rudra/rustc/rustc_middle/ty/context/struct.TyCtxt.html#method.all_local_trait_impls
+[`Visitor::visit_block`]: https://os-checker.github.io/Rudra/rustc/rustc_hir/intravisit/trait.Visitor.html#method.visit_block
+[`is_foreign_item`]: https://os-checker.github.io/Rudra/rustc/rustc_middle/ty/context/struct.TyCtxt.html#method.is_foreign_item
+
+Charon-Rudra 尚未实现 UnsafeDestructor 功能，但我认为可以实现类似的结果：
+1. 遍历 [`trait_impls`] 筛选出 Drop impls，并由此找到它们的 drop 函数体
+2. 在每个函数体内遍历基本块，找到所有函数调用
+3. 如果函数调用的签名信息在 [`is_unsafe`] 字段上为 true，则报告这个 Drop impl
+    * 目前函数签名还没有 is_extern，所以无法排除 extern unsafe functions
+
+[`trait_impls`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/krate/struct.TranslatedCrate.html#structfield.trait_impls
+[`is_unsafe`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/types/struct.FunSig.html#structfield.is_unsafe
