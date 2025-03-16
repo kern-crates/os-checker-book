@@ -567,3 +567,26 @@ fn f<T: Debug>(a: T, f: &mut Formatter<'_>) {
     unsafe { std::ptr::write(0 as _, a) }; // Source: Write Flow
 }
 ```
+
+## UnsafeDestructor
+
+算法相当简单和直观，Rudra 只做了两件事：
+1. 查找当前 crate 中定义的所有 Drop impls
+    * 主要通过 rustc 的 [`lang_items`]、 [`all_local_trait_impls`] 等 API
+2. 查看这些 drop 函数是否存在 unsafe block，然后报告它
+    * 主要在 HIR 层通过 rustc 的 [`Visitor::visit_block`] hook 遍历查找 unsafe block
+    * 此外，Rudra 通过 [`is_foreign_item`] API 排除了 extern unsafe function
+
+[`lang_items`]: https://os-checker.github.io/Rudra/rustc/rustc_middle/ty/context/struct.TyCtxt.html#method.lang_items
+[`all_local_trait_impls`]: https://os-checker.github.io/Rudra/rustc/rustc_middle/ty/context/struct.TyCtxt.html#method.all_local_trait_impls
+[`Visitor::visit_block`]: https://os-checker.github.io/Rudra/rustc/rustc_hir/intravisit/trait.Visitor.html#method.visit_block
+[`is_foreign_item`]: https://os-checker.github.io/Rudra/rustc/rustc_middle/ty/context/struct.TyCtxt.html#method.is_foreign_item
+
+Charon-Rudra 尚未实现 UnsafeDestructor 功能，但我认为可以实现类似的结果：
+1. 遍历 [`trait_impls`] 筛选出 Drop impls，并由此找到它们的 drop 函数体
+2. 在每个函数体内遍历基本块，找到所有函数调用
+3. 如果函数调用的签名信息在 [`is_unsafe`] 字段上为 true，则报告这个 Drop impl
+    * 目前函数签名还没有 is_extern，所以无法排除 extern unsafe functions
+
+[`trait_impls`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/krate/struct.TranslatedCrate.html#structfield.trait_impls
+[`is_unsafe`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/types/struct.FunSig.html#structfield.is_unsafe
