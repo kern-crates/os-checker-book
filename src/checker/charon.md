@@ -305,35 +305,35 @@ Rudra 实现了三种分析
 * 它只是把单个函数内部的调用标注了污点，但没有沿着调用往下分析
 * 它只是实现了 UnsafeDataflow 分析的基础部分（算法未完全实现，但应该可以补全），而且没有实现另外两个分析（尚不知道重现 SendSyncVariance 分析是否可行）
 
-| 编号 |            类别            | 测例 (tests 目录)                      | Rudra 预期 & 实际分析 | Charon-Rudra 分析  | 对照 |
-|------|:--------------------------:|----------------------------------------|-----------------------|--------------------|:----:|
-| 1    | <span class="TP">TP</span> | panic_safety/insertion_sort.rs         | UnsafeDataflow        | UnsafeDataflow     |      |
-| 2    | <span class="TN">TN</span> | panic_safety/order_safe_if.rs          |                       |                    |      |
-| 3    | <span class="TN">TN</span> | panic_safety/order_safe_loop.rs        |                       |                    |      |
-| 4    | <span class="TN">TN</span> | panic_safety/order_safe.rs             |                       |                    |      |
-| 5    | <span class="TP">TP</span> | panic_safety/order_unsafe_loop.rs      | UnsafeDataflow        | UnsafeDataflow     |      |
-| 7    | <span class="TP">TP</span> | panic_safety/order_unsafe_transmute.rs | UnsafeDataflow        | UnsafeDataflow     |      |
-| 6    | <span class="TP">TP</span> | panic_safety/order_unsafe.rs           | UnsafeDataflow        | UnsafeDataflow     |      |
-| 8    | <span class="FN">FN</span> | panic_safety/pointer_to_ref.rs         |                       |                    |      |
-| 9    | <span class="TP">TP</span> | panic_safety/vec_push_all.rs           | UnsafeDataflow        | UnsafeDataflow     |      |
-| 10   | <span class="TN">TN</span> | send_sync/no_generic.rs                |                       |                    |      |
-| 11   | <span class="FP">FP</span> | send_sync/okay_channel.rs              | SendSyncVariance      |                    |  ❌  |
-| 12   | <span class="TN">TN</span> | send_sync/okay_imm.rs                  |                       |                    |      |
-| 13   | <span class="TN">TN</span> | send_sync/okay_negative.rs             |                       |                    |      |
-| 14   | <span class="TP">TP</span> | send_sync/okay_phantom.rs              | SendSyncVariance      |                    |  ❌  |
-| 15   | <span class="TN">TN</span> | send_sync/okay_ptr_like.rs             |                       |                    |      |
-| 16   | <span class="TN">TN</span> | send_sync/okay_transitive.rs           |                       |                    |      |
-| 17   | <span class="TN">TN</span> | send_sync/okay_where.rs                |                       |                    |      |
-| 18   | <span class="FP">FP</span> | send_sync/sync_over_send_fp.rs         | SendSyncVariance      |                    |  ❌  |
-| 19   | <span class="TP">TP</span> | send_sync/wild_channel.rs              | SendSyncVariance      |                    |  ❌  |
-| 20   | <span class="TP">TP</span> | send_sync/wild_phantom.rs              | SendSyncVariance      |                    |  ❌  |
-| 21   | <span class="TP">TP</span> | send_sync/wild_send.rs                 | SendSyncVariance      |                    |  ❌  |
-| 22   | <span class="TP">TP</span> | send_sync/wild_sync.rs                 | SendSyncVariance      |                    |  ❌  |
-| 23   | <span class="TN">TN</span> | unsafe_destructor/copy_filter.rs       |                       | ~~UnsafeDataflow~~ |      |
-| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                       |                    |      |
-| 25   | <span class="FP">FP</span> | unsafe_destructor/fp1.rs               | UnsafeDestructor      |                    |  ❌  |
-| 26   | <span class="TN">TN</span> | unsafe_destructor/normal1.rs           |                       |                    |      |
-| 27   | <span class="TP">TP</span> | unsafe_destructor/normal2.rs           | UnsafeDestructor      |                    |  ❌  |
+| 编号 |            类别            | 测例 (tests 目录)                      | Rudra            | Charon-Rudra       | 对照 | New Charon-Rudra | 对照 |
+|------|:--------------------------:|----------------------------------------|------------------|--------------------|:----:|------------------|------|
+| 1    | <span class="TP">TP</span> | panic_safety/insertion_sort.rs         | UnsafeDataflow   | UnsafeDataflow     |      | UnsafeDataflow   |      |
+| 2    | <span class="TN">TN</span> | panic_safety/order_safe_if.rs          |                  |                    |      |                  |      |
+| 3    | <span class="TN">TN</span> | panic_safety/order_safe_loop.rs        |                  |                    |      |                  |      |
+| 4    | <span class="TN">TN</span> | panic_safety/order_safe.rs             |                  |                    |      |                  |      |
+| 5    | <span class="TP">TP</span> | panic_safety/order_unsafe_loop.rs      | UnsafeDataflow   | UnsafeDataflow     |      | UnsafeDataflow   |      |
+| 7    | <span class="TP">TP</span> | panic_safety/order_unsafe_transmute.rs | UnsafeDataflow   | UnsafeDataflow     |      | UnsafeDataflow   |      |
+| 6    | <span class="TP">TP</span> | panic_safety/order_unsafe.rs           | UnsafeDataflow   | UnsafeDataflow     |      | UnsafeDataflow   |      |
+| 8    | <span class="FN">FN</span> | panic_safety/pointer_to_ref.rs         |                  |                    |      |                  |      |
+| 9    | <span class="TP">TP</span> | panic_safety/vec_push_all.rs           | UnsafeDataflow   | UnsafeDataflow     |      | UnsafeDataflow   |      |
+| 10   | <span class="TN">TN</span> | send_sync/no_generic.rs                |                  |                    |      |                  |      |
+| 11   | <span class="FP">FP</span> | send_sync/okay_channel.rs              | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 12   | <span class="TN">TN</span> | send_sync/okay_imm.rs                  |                  |                    |      |                  |      |
+| 13   | <span class="TN">TN</span> | send_sync/okay_negative.rs             |                  |                    |      |                  |      |
+| 14   | <span class="TP">TP</span> | send_sync/okay_phantom.rs              | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 15   | <span class="TN">TN</span> | send_sync/okay_ptr_like.rs             |                  |                    |      |                  |      |
+| 16   | <span class="TN">TN</span> | send_sync/okay_transitive.rs           |                  |                    |      |                  |      |
+| 17   | <span class="TN">TN</span> | send_sync/okay_where.rs                |                  |                    |      |                  |      |
+| 18   | <span class="FP">FP</span> | send_sync/sync_over_send_fp.rs         | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 19   | <span class="TP">TP</span> | send_sync/wild_channel.rs              | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 20   | <span class="TP">TP</span> | send_sync/wild_phantom.rs              | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 21   | <span class="TP">TP</span> | send_sync/wild_send.rs                 | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 22   | <span class="TP">TP</span> | send_sync/wild_sync.rs                 | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 23   | <span class="TN">TN</span> | unsafe_destructor/copy_filter.rs       |                  | ~~UnsafeDataflow~~ |      |                  |      |
+| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                  |                    |      | UnsafeDestructor | ❌   |
+| 25   | <span class="FP">FP</span> | unsafe_destructor/fp1.rs               | UnsafeDestructor |                    |  ❌  | UnsafeDestructor |      |
+| 26   | <span class="TN">TN</span> | unsafe_destructor/normal1.rs           |                  |                    |      |                  |      |
+| 27   | <span class="TP">TP</span> | unsafe_destructor/normal2.rs           | UnsafeDestructor |                    |  ❌  | UnsafeDestructor |      |
 
 <p style="text-align: center;">对照含义：Charon-Rudra 不支持 = ❌；Charon-Rudra 分析结果不同 = 😀</p>
 
