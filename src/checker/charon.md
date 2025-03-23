@@ -590,3 +590,54 @@ Charon-Rudra 尚未实现 UnsafeDestructor 功能，但我认为可以实现类�
 
 [`trait_impls`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/krate/struct.TranslatedCrate.html#structfield.trait_impls
 [`is_unsafe`]: https://os-checker.github.io/charon-rudra/charon/charon_lib/ast/types/struct.FunSig.html#structfield.is_unsafe
+
+## SendSyncVariance
+
+首先解释这个检查名称中的 Variance。根据 Rudra 的论文，基本想法是，当且仅当 `T: Send` 满足，则 `Vec<T>: Send`
+满足，这种由容器类型引发的推理关系与子类型关系的 type variance 类似，所以称 Send 和 Sync 的 trait bound 检查为 SendSyncVariance。
+
+> The Send and Sync rules become complex as the implementation bound becomes conditional when generic types
+> are involved (see Table 1). One simple example is a container type, `Vec<T>`, that is Send only if the inner type T is Send and
+> is Sync only if the inner type T is Sync. The logic quickly becomes non-intuitive and error-prone for types that provide
+> non-trivial sharing like Mutex and RwLock (see Table 1). Inspired by type variance in subtyping relations, we call this
+> subtle relation between the Send/Sync of a generic type and the Send/Sync of the inner types the Send/Sync variance.
+
+需要说明的是，这个 Send/Sync Variance 与 Rust 语言认为的 [Variance](https://doc.rust-lang.org/reference/subtyping.html) 
+并不一致（后者只发生在生命周期泛型上）。
+
+然后，阅读完 Rudra 的这部分的源代码之后，我发现实际的实现与论文的算法描述有些出入。
+
+因此，无论如何我都会自己再描述 Rudra 的算法，就像描述以上两种算法一样。
+
+Send 类型安全检测的核心算法：
+1. 查找该 crate 内所有 Send impl block
+2. 查看 impl 块上，ADT 的泛型类型参数是否具有 Send 约束；如果没有，则报告诊断
+
+看起来似乎很简单和直观，但有一系列细节问题：
+* 由于编译器会自动对所有泛型类型参数插入 Send 约束来严格保证并发和类型安全，不需要人为做额外的事情。因此手工实现的
+  Send impl，通常意味着代码作者有自己的理由。因此严格的 Send 检测只是一种起到提醒和初筛的作用。
+* Rudra 考虑到了泛型类型位于 `PhantomData` 内，从论文算法伪代码来看，当发生这种情况，不应该报告检查 Send
+  的检查结果。但实际代码并未做到这一点，无论泛型类型在哪，都会进行相同的处理和报告。
+* 如果泛型类型在 Send impl 块上具有 Copy 或 Sync 约束，那么视为具有 Send 约束，认为安全，因此不报告。
+
+Sync 类型安全检测算法描述如下：
+1. 查找该 crate 内所有 Sync impl block
+2. 查看 impl 块的 ADT 的泛型类型，在 API（函数、方法）上具有哪些行为
+    * 如果泛型类型通过 **所有权** 使用，则检查该泛型在 Sync impl 块上是否具有 Send / Copy 约束；如果没有，则报告诊断
+    * 如果泛型类型通过 **借用** 来使用，则检查该泛型在 Sync impl 块上是否具有 Sync 约束；如果没有，则报告诊断
+
+在实际检查 Sync 安全的代码中，我发现还有很多细节和可能导致错报的地方：
+* 只通过 API 的签名来近似泛型的类型实际使用
+  * 更精确的方式是进入函数体，并且进入该函数体的所有调用
+  * 还要更精确地话，需要跟踪类型擦除（这可能非常困难）
+* ADT 使用泛型类型的方式可能非常复杂，比如
+  * `ADT<T>` 对 T 的使用是 `Wrapper<T>`，那么需要通过遍历才能真正确定最终是使用 `T` 还是 `&T`
+  * `ADT<T>` 对 T 的使用发生在 trait bounds 上，比如 `fn f<T, U: Trait<T>>(..)`，那么通过所有权还是借用使用 T 需要查看 Trait
+* 我怀疑 Rudra 在存储泛型参数位置的那些代码上可能存在 bug，因为 `ty.index` 似乎作用于局部泛型的位置，但 Rudra 
+  没有记录额外的信息，让它对应到 ADT 的泛型位置
+  * 我知道 Rudra 在 Send / Sync 检查上考虑了 impl 泛型使用位置和 ADT 泛型定义位置的映射，但在嵌套的泛型中，没有维护映射关系。比如
+    `ADT<T>` 在 `T` 上可能使用方式为 `Wrapper1<'_, T>`，那么 `T` 在遍历过程中，出现在后者的索引为 1，但出现在前者的索引为 0。
+* 一些复杂并且我怀疑是否必要的做法
+  * 单独处理 `PhantomData`，并且二元化地认为泛型 `T` 要么只在 `PhantomData<T>` 中，要么不在 `PhantomData<T>` 中，实际上这不太必要？
+  * Rudra 区分构造 `Self` 函数和 `&Self` 方法，我认为也不必要。因为这是查看泛型以所有权 vs 借用方式使用的间接方式，Self 
+    的使用方式和泛型使用方式可能完全无关，从而造成错报。
