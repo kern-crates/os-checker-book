@@ -317,20 +317,20 @@ Rudra 实现了三种分析
 | 8    | <span class="FN">FN</span> | panic_safety/pointer_to_ref.rs         |                  |                    |      |                  |      |
 | 9    | <span class="TP">TP</span> | panic_safety/vec_push_all.rs           | UnsafeDataflow   | UnsafeDataflow     |      | UnsafeDataflow   |      |
 | 10   | <span class="TN">TN</span> | send_sync/no_generic.rs                |                  |                    |      |                  |      |
-| 11   | <span class="FP">FP</span> | send_sync/okay_channel.rs              | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 11   | <span class="FP">FP</span> | send_sync/okay_channel.rs              | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
 | 12   | <span class="TN">TN</span> | send_sync/okay_imm.rs                  |                  |                    |      |                  |      |
 | 13   | <span class="TN">TN</span> | send_sync/okay_negative.rs             |                  |                    |      |                  |      |
-| 14   | <span class="TP">TP</span> | send_sync/okay_phantom.rs              | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 14   | <span class="TP">TP</span> | send_sync/okay_phantom.rs              | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
 | 15   | <span class="TN">TN</span> | send_sync/okay_ptr_like.rs             |                  |                    |      |                  |      |
 | 16   | <span class="TN">TN</span> | send_sync/okay_transitive.rs           |                  |                    |      |                  |      |
 | 17   | <span class="TN">TN</span> | send_sync/okay_where.rs                |                  |                    |      |                  |      |
-| 18   | <span class="FP">FP</span> | send_sync/sync_over_send_fp.rs         | SendSyncVariance |                    |  ❌  |                  | ❌   |
-| 19   | <span class="TP">TP</span> | send_sync/wild_channel.rs              | SendSyncVariance |                    |  ❌  |                  | ❌   |
-| 20   | <span class="TP">TP</span> | send_sync/wild_phantom.rs              | SendSyncVariance |                    |  ❌  |                  | ❌   |
-| 21   | <span class="TP">TP</span> | send_sync/wild_send.rs                 | SendSyncVariance |                    |  ❌  |                  | ❌   |
-| 22   | <span class="TP">TP</span> | send_sync/wild_sync.rs                 | SendSyncVariance |                    |  ❌  |                  | ❌   |
+| 18   | <span class="FP">FP</span> | send_sync/sync_over_send_fp.rs         | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
+| 19   | <span class="TP">TP</span> | send_sync/wild_channel.rs              | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
+| 20   | <span class="TP">TP</span> | send_sync/wild_phantom.rs              | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
+| 21   | <span class="TP">TP</span> | send_sync/wild_send.rs                 | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
+| 22   | <span class="TP">TP</span> | send_sync/wild_sync.rs                 | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
 | 23   | <span class="TN">TN</span> | unsafe_destructor/copy_filter.rs       |                  | ~~UnsafeDataflow~~ |      |                  |      |
-| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                  |                    |      | UnsafeDestructor | ❌   |
+| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                  |                    |      | UnsafeDestructor | 😀   |
 | 25   | <span class="FP">FP</span> | unsafe_destructor/fp1.rs               | UnsafeDestructor |                    |  ❌  | UnsafeDestructor |      |
 | 26   | <span class="TN">TN</span> | unsafe_destructor/normal1.rs           |                  |                    |      |                  |      |
 | 27   | <span class="TP">TP</span> | unsafe_destructor/normal2.rs           | UnsafeDestructor |                    |  ❌  | UnsafeDestructor |      |
@@ -347,8 +347,11 @@ Rudra 实现了三种分析
 <p style="text-align: center;">Positive = 报告；Negative = 不报告</p>
 
 
-注：`copy_filter.rs` 测例由我在 [dcda8f7](https://github.com/os-checker/charon-rudra/commit/dcda8f74bbba25446da936b08f75b917ce8c0f97)
+注：
+1. `copy_filter.rs` 测例由我在 [dcda8f7](https://github.com/os-checker/charon-rudra/commit/dcda8f74bbba25446da936b08f75b917ce8c0f97)
 提交中修复，原因是原 Charon-Rudra 对泛型尚未检查 Copy bound。
+2. `tests/utility` 目录下面的测例并不在 Rudra 的测例分析范围内，因为它们缺少 meta 头。我补充了 utility 测例的情况，
+   `generic_param_ctxts.rs` 和 `report_handle_macro` 是在上面表格之外的具有 SendSyncVariance 诊断的测例。
 
 ## 细节解释
 
@@ -633,10 +636,6 @@ Sync 类型安全检测算法描述如下：
 * ADT 使用泛型类型的方式可能非常复杂，比如
   * `ADT<T>` 对 T 的使用是 `Wrapper<T>`，那么需要通过遍历才能真正确定最终是使用 `T` 还是 `&T`
   * `ADT<T>` 对 T 的使用发生在 trait bounds 上，比如 `fn f<T, U: Trait<T>>(..)`，那么通过所有权还是借用使用 T 需要查看 Trait
-* 我怀疑 Rudra 在存储泛型参数位置的那些代码上可能存在 bug，因为 `ty.index` 似乎作用于局部泛型的位置，但 Rudra 
-  没有记录额外的信息，让它对应到 ADT 的泛型位置
-  * 我知道 Rudra 在 Send / Sync 检查上考虑了 impl 泛型使用位置和 ADT 泛型定义位置的映射，但在嵌套的泛型中，没有维护映射关系。比如
-    `ADT<T>` 在 `T` 上可能使用方式为 `Wrapper1<'_, T>`，那么 `T` 在遍历过程中，出现在后者的索引为 1，但出现在前者的索引为 0。
 * 一些复杂并且我怀疑是否必要的做法
   * 单独处理 `PhantomData`，并且二元化地认为泛型 `T` 要么只在 `PhantomData<T>` 中，要么不在 `PhantomData<T>` 中，实际上这不太必要？
   * Rudra 区分构造 `Self` 函数和 `&Self` 方法，我认为也不必要。因为这是查看泛型以所有权 vs 借用方式使用的间接方式，Self 
