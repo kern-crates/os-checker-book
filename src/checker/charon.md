@@ -330,7 +330,7 @@ Rudra 实现了三种分析
 | 21   | <span class="TP">TP</span> | send_sync/wild_send.rs                 | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
 | 22   | <span class="TP">TP</span> | send_sync/wild_sync.rs                 | SendSyncVariance |                    |  ❌  | SendSyncVariance |      |
 | 23   | <span class="TN">TN</span> | unsafe_destructor/copy_filter.rs       |                  | ~~UnsafeDataflow~~ |      |                  |      |
-| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                  |                    |      | UnsafeDestructor | ❌   |
+| 24   | <span class="TN">TN</span> | unsafe_destructor/ffi.rs               |                  |                    |      | UnsafeDestructor | 😀   |
 | 25   | <span class="FP">FP</span> | unsafe_destructor/fp1.rs               | UnsafeDestructor |                    |  ❌  | UnsafeDestructor |      |
 | 26   | <span class="TN">TN</span> | unsafe_destructor/normal1.rs           |                  |                    |      |                  |      |
 | 27   | <span class="TP">TP</span> | unsafe_destructor/normal2.rs           | UnsafeDestructor |                    |  ❌  | UnsafeDestructor |      |
@@ -347,8 +347,11 @@ Rudra 实现了三种分析
 <p style="text-align: center;">Positive = 报告；Negative = 不报告</p>
 
 
-注：`copy_filter.rs` 测例由我在 [dcda8f7](https://github.com/os-checker/charon-rudra/commit/dcda8f74bbba25446da936b08f75b917ce8c0f97)
+注：
+1. `copy_filter.rs` 测例由我在 [dcda8f7](https://github.com/os-checker/charon-rudra/commit/dcda8f74bbba25446da936b08f75b917ce8c0f97)
 提交中修复，原因是原 Charon-Rudra 对泛型尚未检查 Copy bound。
+2. `tests/utility` 目录下面的测例并不在 Rudra 的测例分析范围内，因为它们缺少 meta 头。我补充了 utility 测例的情况，
+   `generic_param_ctxts.rs` 和 `report_handle_macro` 是在上面表格之外的具有 SendSyncVariance 诊断的测例。
 
 ## 细节解释
 
