@@ -27,6 +27,7 @@
 - [检查工具笔记]()
   - [Charon](./checker/charon.md)
   - [Rudra](./checker/rudra.md)
+  - [Kani](./checker/kani.md)
   - [RAPx](./checker/rap.md)
 
 - [开发日志](./devlogs.md)
