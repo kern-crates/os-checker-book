@@ -154,3 +154,45 @@ Kani 使用动态库技巧，直接传递编译器参数来注入依赖，无需
 [setup]: https://github.com/model-checking/kani/blob/7a126c2b2e16b843d94bcd850a17375c3299b826/src/setup.rs
 
 [^1]: 但这貌似造成某些 RUSTFLAGS 环境变量传递失效。
+
+
+## GSoC Proposal
+
+Rust 项目中的 GSoC 中有两项与 verify-rust-std 直接相关。
+
+我决定参加 “[Distributed and resource-efficient verification][GSoC]”。
+
+[GSoC]: https://github.com/rust-lang/google-summer-of-code?tab=readme-ov-file#distributed-and-resource-efficient-verification
+
+该任务的主要内容是让验证标准库的 CI 运行地更快一些，通过把验证的清单拆分到多个 Github Runner 机器上，并发地执行验证，并且通过可达性分析，跳过未改动的证明，只验证代码改动影响的证明。
+
+虽然 verify-rust-std 还聚集了其他几个验证工具，但是采用最多、耗时最长的是 kani。因此主要聚焦于缩短 kani 的验证时间，尤其当 proofs 的数量逐渐增加时。
+
+现状：当前 kani 在 verify-rust-std 仓库总共需要大约 10 小时机器时间，在 Linux 和 macOS 上分别运行验证代码，并最终生成验证清单；通过将验证清单分批分散到 4 个独立的 runner 
+机器上并行执行，从而 CI 时间取决于最耗时的那个 runner，从而需要大约 2 小时人类时间。
+
+本节定义：
+* proofs：标注了 `#[kani::proof]` 和 `#[kani::proof_for_contract]`，甚至 `-Zautoharness`（虽然目前尚未在 verify-rust-std 中使用）的证明函数。
+
+提议实施以下步骤来完成该任务：
+1. 获取所有 proofs 的基本信息，尤其是名称和对应的 hash 值（下文介绍）
+2. 下载上次运行结果，尤其获取所有 proofs 名称、hash 值以及实际执行耗时
+3. 通过对比 hash 值的差异，计算改动的 proofs，得到待运行 proofs 清单
+4. 在多个 runner 上并行地完成改动的 proofs，并记录耗时
+5. 上传所有 proofs 的信息：未改动的 proofs 直接使用上一次的运行结果，新运行的 proofs 使用这次的运行结果
+
+细节：
+* 每个 proof 携带一个 hash 值，它基于 kani 的可达性分析，通过提取以下信息计算
+  * proof 自身的信息（整个函数及其属性）
+  * 以及所有内部函数调用的信息（被调用函数及其属性）
+* 下载和上传数据
+  * 使用 npm 的 [artifact API 接口](https://github.com/actions/toolkit/tree/main/packages/artifact)
+  * 需要维护一个列表记录完成的缓存信息，以便寻找上一次的运行结果；上传所有分区数据之后才汇总并更新这个列表
+  * 工件的名称格式为 `kani-commit_hash-{0,1,2,...}`，其中 0 表示汇总数据，其他对应 Runner 分区数据
+* 分布式更新数据
+  * 方案一（推荐）：提前计算每个 Runner 执行的所有 proofs；这不需要同步 runner 之间的状态；将来可以通过历史耗时实现负载均衡
+  * 方案二：提前计算每个 Runner 执行的一部分 proofs，当 runner 完成一批之后，获取下一批 proofs 运行；这需要同步状态；由于每次改动的涉及的 proofs 并不多，暂时不考虑动态清单策略
+* 其他
+  * 需要处理失败：如果验证期间因为失败而提前退出，应该仍然产生以及执行过的 proofs 的结果，并把结果上传（未执行的 proofs 应该有额外的状态标记）
+  * 多个 PR 的 CI 同时触发，将造成重复验证，但不应该相互影响，因为每个 PR 获取的上一次运行结果在其各自的 CI 期间不会发生变化
+  * 提供强制运行所有 proofs 的配置选项
