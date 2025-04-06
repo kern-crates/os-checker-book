@@ -103,7 +103,7 @@ VERIFICATION:- FAILED
 Verification Time: 0.09984675s
 
 Concrete playback unit test for `f`:
-\```
+---
 /// Test generated for harness `f`
 ///
 /// Check for `assertion`: ""a ≠ 1""
@@ -116,7 +116,7 @@ fn kani_concrete_playback_f_2469314071636892245() {
     ];
     kani::concrete_playback_run(concrete_vals, f);
 }
-\```
+---
 INFO: To automatically add the concrete playback unit test(s) to the src code, run Kani with `--concrete-playback=inplace`.
 Manual Harness Summary:
 Verification failed for - f
@@ -155,6 +155,32 @@ Kani 使用动态库技巧，直接传递编译器参数来注入依赖，无需
 
 [^1]: 但这貌似造成某些 RUSTFLAGS 环境变量传递失效。
 
+### 评估是否值得证明
+
+文档：<https://model-checking.github.io/kani/dev-assess.html>
+
+Kani 的 `cargo kani assess` 的相关命令可以输出一些评估数据，来帮助包的作者决定在当前的测例情况上编写证明，以及了解
+kani 的哪些功能不支持你的测例。
+
+示例输出：
+
+```text
+======================================================
+ Unsupported feature           |   Crates | Instances
+                               | impacted |    of use
+-------------------------------+----------+-----------
+ caller_location               |       71 |       239
+ simd_bitmask                  |       39 |       160
+...
+
+================================================
+ Reason for failure           | Number of tests
+------------------------------+-----------------
+ unwind                       |              61
+ none (success)               |               6
+ assertion + overflow         |               2
+...
+```
 
 ## GSoC Proposal
 
