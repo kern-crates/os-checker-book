@@ -166,7 +166,7 @@ os-checker 会对所有检测到的 targets 执行 `rustup target install`。
 
 ### `setup`
 
-使用 `setup` 选项来设置编译环境，它只会执行一次。
+使用 `setup` 选项来设置编译环境，它在下载仓库之前运行，并且只会执行一次。
 
 它接收字符串或者字符串数组。
 
@@ -190,6 +190,8 @@ os-checker 会对所有检测到的 targets 执行 `rustup target install`。
 ```
 
 Tracking: [#81](https://github.com/os-checker/os-checker/issues/81)
+
+提示：在 docker 容器中，不需要使用 sudo，否则出现报错。
 
 ### `features`
 
