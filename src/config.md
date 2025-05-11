@@ -439,4 +439,28 @@ export FORCE_RUN_CHECK=true
 
 见 [PR#351](https://github.com/os-checker/os-checker/pull/351)。
 
+### `meta.run_all_checkers`
 
+主要用于禁用所有检查：
+
+```json
+{
+  "user/repo": {
+    "meta": { "run_all_checkers": false }
+}
+```
+
+此外，它可与 `cmds.checker` 配合使用，表示只进行某中检查：
+
+```json
+{
+  "user/repo": {
+    "meta": { "run_all_checkers": false },
+    "cmds": { "lockbud": true }
+  }
+}
+```
+
+注意：os-checker 默认开启所有检查，因此该字段的值默认为 true。
+
+见 [PR#356](https://github.com/os-checker/os-checker/pull/356)。
