@@ -392,3 +392,33 @@ skip_pkg_dir_globs，以减少检查时间。
 环境变量被放入命令的缓存键中。
 
 见 [PR#244](https://github.com/os-checker/os-checker/pull/244)。
+
+### `meta.rerun`
+
+重新运行某个仓库的检查。对某个仓库中进行重新下载，但使用缓存来检查。
+
+```json
+{
+  "user/repo": {
+    "meta": { "rerun": true }
+  }
+}
+```
+
+这主要用于临时使用，保持配置文件，但局部重新检查某个仓库。
+
+见 [PR#330](https://github.com/os-checker/os-checker/pull/330)。
+
+如果强制重新检查，需要使用如下两个环境变量：
+
+```bash
+# force downloading repos to run check
+export FORCE_REPO_CHECK=true
+# force running checks after downloading repos
+export FORCE_RUN_CHECK=true
+```
+
+注意：该 `meta.rerun` 的行为是仅仅是某个仓库上设置 `FORCE_REPO_CHECK=true`，与 `FORCE_RUN_CHECK` 
+无关 —— 应该可以配合 `FORCE_RUN_CHECK=true` 让这个仓库重新检查，并保持其他仓库使用缓存。
+
+
