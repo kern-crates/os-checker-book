@@ -327,4 +327,37 @@ Tracking: [#241](https://github.com/os-checker/os-checker/issues/241)
 * `path/to/tests/` 目录
 * 等等
 
+### `meta.only_pkg_dir_globs`
 
+只检查符合条件的包，可与 `meta.skip_pkg_dir_globs` 同时使用。比如
+
+```json
+{
+  "paritytech/polkadot-sdk": {
+    "meta": {
+      "only_pkg_dir_globs": [ "polkadot/*" ],
+      "skip_pkg_dir_globs": [ "*test*", "*bench*", "*example*", "*template*", "*doc*" ]
+    }
+  }
+}
+```
+
+表示只检查 polkadot 目录中所有包，但排除（不进入）测试、示例之类的目录。
+
+对于大型项目（一个仓库至少几十个包的情况），最好指定 only_pkg_dir_globs，并且鼓励同时指定
+skip_pkg_dir_globs，以减少检查时间。
+
+注意：skip_pkg_dir_globs 具有更高的优先级，意味着
+
+```json
+{
+  "paritytech/polkadot-sdk": {
+    "meta": {
+      "only_pkg_dir_globs": [ "*sub*" ],
+      "skip_pkg_dir_globs": [ "*test*", "*bench*", "*example*", "*template*", "*doc*" ]
+    }
+  }
+}
+```
+
+如果 test 目录存在符合 `*sub*` 的路径，该路径不会出现，因为首先排除了 test 目录。
