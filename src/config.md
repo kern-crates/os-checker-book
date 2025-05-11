@@ -421,4 +421,22 @@ export FORCE_RUN_CHECK=true
 注意：该 `meta.rerun` 的行为是仅仅是某个仓库上设置 `FORCE_REPO_CHECK=true`，与 `FORCE_RUN_CHECK` 
 无关 —— 应该可以配合 `FORCE_RUN_CHECK=true` 让这个仓库重新检查，并保持其他仓库使用缓存。
 
+### `meta.use_last_cache`
+
+如果一个仓库已经存在数据库，无论它最后一次是否完成检查，那么直接使用那个检查结果，并跳过 github 访问。
+
+这通常用于快速生成已有的检查结果，因此提供了命令行参数 `os-checker run --use-last-cache` 控制对所有配置仓库启用。
+
+在配置文件中，对单独一个启用它，使用
+
+```json
+{
+  "user/repo": {
+    "meta": { "use_last_cache": true }
+  }
+}
+```
+
+见 [PR#351](https://github.com/os-checker/os-checker/pull/351)。
+
 
