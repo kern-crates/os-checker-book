@@ -36,6 +36,16 @@
 - [第 29-30 周]：初步重构诊断详情页面；PPT 演讲准备完毕
 - [第 31 周]：file-tree 页面添加筛选项来交互式展示诊断详情
 - [第 32 周]：修改 PPT；file-tree 页面支持路由参数查询；testcases 页面添加筛选下拉框查询
+- [第 33 周]：进行 os-checker 报告；plugin-cargo 支持缓存；WebUI 改进；文档添加《工作原理》一章
+- [第 34 周]: 研究 Charon、Rudra 和 Charon-Rudra；os-checker 更新检查工具及其工具链
+- [第 35 周]: 给 Charon 提交重构 CLI & 修复 PRs；研究 Rudra 源代码
+- [第 36 周]: 给 Charon 提交 PRs；使用 Charon 数据源复现 Rudra 的 Unsafe Destructor 分析；阅读和记录 SendSyncVariance 分析
+- [第 37 周]: Charon-Rudra 使用 Charon 数据源复现 Rudra 的 Send / Sync 分析；一些计划
+- [第 38 周]: 阅读 Kani 代码和文档；os-checker 小修复
+- [第 39 周]: 创建 distributed-verification 仓库，从每个 `#[kani::proof]` 入口获取所有调用，计算稳定的 hash 值
+- [第 40 周]: distributed-verification 测试；Rust Workshop 提纲；term-rustdoc 更新
+- [第 41 周]: os-checker 许可从 MIT 改为 GPL-3.0 OR MulanPubL；distributed-verification 处理 kani-list.json 和 libcore proofs
+- [第 42 周]: os-checker 与 Chain-Fox 合作；os-checker 修复和添加新功能；distributed-verification 支持新参数
 
 
 [第 1-2 周]: https://github.com/os-checker/os-checker/blob/3fdf88db57403949f95c3034608481d64db80764/assets/development-logs.md
@@ -66,3 +76,14 @@
 [第 29-30 周]: https://github.com/os-checker/os-checker/discussions/278
 [第 31 周]: https://github.com/os-checker/os-checker/discussions/284
 [第 32 周]: https://github.com/os-checker/os-checker/discussions/287
+[第 33 周]: https://github.com/os-checker/os-checker/discussions/291
+[第 34 周]: https://github.com/os-checker/os-checker/discussions/301
+[第 35 周]: https://github.com/os-checker/os-checker/discussions/302
+[第 36 周]: https://github.com/os-checker/os-checker/discussions/303
+[第 37 周]: https://github.com/os-checker/os-checker/discussions/304
+[第 38 周]: https://github.com/os-checker/os-checker/discussions/308
+[第 39 周]: https://github.com/os-checker/os-checker/discussions/309
+[第 40 周]: https://github.com/os-checker/os-checker/discussions/310
+[第 41 周]: https://github.com/os-checker/os-checker/discussions/316
+[第 42 周]: https://github.com/os-checker/os-checker/discussions/339
+
