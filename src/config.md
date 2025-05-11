@@ -302,6 +302,8 @@ Tracking: [#241](https://github.com/os-checker/os-checker/issues/241)
 
 ### `meta.skip_pkg_dir_globs`
 
+接受一个字符串或者字符串列表。
+
 如果 package 所处的目录符合 glob 条件，那么不检查这个 package。示例：
 
 ```json
@@ -330,6 +332,8 @@ Tracking: [#241](https://github.com/os-checker/os-checker/issues/241)
 * 等等
 
 ### `meta.only_pkg_dir_globs`
+
+接受一个字符串或者字符串列表。
 
 只检查符合条件的包，可与 `meta.skip_pkg_dir_globs` 同时使用。比如
 
@@ -395,7 +399,9 @@ skip_pkg_dir_globs，以减少检查时间。
 
 ### `meta.rerun`
 
-重新运行某个仓库的检查。对某个仓库中进行重新下载，但使用缓存来检查。
+该字段接受 bool 值。
+
+`true` 表示：重新运行某个仓库的检查。对某个仓库中进行重新下载，但使用缓存来检查。
 
 ```json
 {
@@ -423,7 +429,9 @@ export FORCE_RUN_CHECK=true
 
 ### `meta.use_last_cache`
 
-如果一个仓库已经存在数据库，无论它最后一次是否完成检查，那么直接使用那个检查结果，并跳过 github 访问。
+该字段接受 bool 值。
+
+`true` 表示：如果一个仓库已经存在数据库，无论它最后一次是否完成检查，那么直接使用那个检查结果，并跳过 github 访问。
 
 这通常用于快速生成已有的检查结果，因此提供了命令行参数 `os-checker run --use-last-cache` 控制对所有配置仓库启用。
 
@@ -440,6 +448,8 @@ export FORCE_RUN_CHECK=true
 见 [PR#351](https://github.com/os-checker/os-checker/pull/351)。
 
 ### `meta.run_all_checkers`
+
+该字段接受 bool 值。
 
 主要用于禁用所有检查：
 
