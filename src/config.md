@@ -363,3 +363,32 @@ skip_pkg_dir_globs，以减少检查时间。
 ```
 
 如果 test 目录存在符合 `*sub*` 的路径，该路径不会出现，因为首先排除了 test 目录。
+
+### `meta.target_env` 和 `env`
+
+`1`: 仓库级别的环境变量作用于所有成员库的所有检查命令
+
+```json
+{
+  "user/repo": { "env": {"ENV1": "val1", "ENV2": "val2"} }
+}
+```
+
+
+`3`: 与 target 交互，则放到 `meta.target_env`
+
+
+```json
+"meta": {
+  "target_env": {
+    "target1": { "ENV1": "val" },
+    "target2": { "ENV2": "val" }
+  }
+}
+```
+
+当环境变量重复时，3 覆盖 1。
+
+环境变量被放入命令的缓存键中。
+
+见 [PR#244](https://github.com/os-checker/os-checker/pull/244)。
