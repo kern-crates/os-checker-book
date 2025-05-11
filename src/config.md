@@ -307,13 +307,24 @@ Tracking: [#241](https://github.com/os-checker/os-checker/issues/241)
   "AsyncModules/embassy-priority": {
     "meta": {
       "skip_pkg_dir_globs": [
-        "docs/**",
-        "examples/**",
-        "tests/**"
+        "*test*", "*bench*", "*example*", "*template*", "*doc*"
       ]
     }
   }
 }
 ```
 
-注意：该 glob 应为仓库根目录的相对路径。
+注意：该字段作用于每级目录，控制是否进入该目录，os-checker 通过递归查找来匹配这些 globs。
+
+也就是说，`*test*` 适用于
+* `test/` 目录
+* `tests/` 目录
+* `prefix-test/` 目录
+* `prefix-tests/` 目录
+* `test-posfix/` 目录
+* `tests-posfix/` 目录
+* `path/to/test/` 目录
+* `path/to/tests/` 目录
+* 等等
+
+
