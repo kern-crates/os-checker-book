@@ -46,6 +46,13 @@
 - [第 40 周]: distributed-verification 测试；Rust Workshop 提纲；term-rustdoc 更新
 - [第 41 周]: os-checker 许可从 MIT 改为 GPL-3.0 OR MulanPubL；distributed-verification 处理 kani-list.json 和 libcore proofs
 - [第 42 周]: os-checker 与 Chain-Fox 合作；os-checker 修复和添加新功能；distributed-verification 支持新参数
+- [第 43 周]: os-checker 新增配置字段和命令行参数；给 tag-std 编写基于 Rust 编译器驱动的 demo
+- [第 44 周]: io-uring 异步运行时基准测试；distributed-verification 增加 --stat 参数，统计标注 kani 属性的函数；阅读 RustWeek - All Hands 会议记录
+- [第 45 周]: tag-std 实现基本的安全属性标注语法和 safety 文档生成；os-checker 重新检查所有仓库
+- [第 46 周]: tag-std - 实现本地安全属性 discharge 检测；AsyncOS.github.io - 异步操作系统设计文档部署；创建 hugo-book-template 模板仓库
+- [第 47 周]: tag-std 实现跨 crates 自定义安全属性的 discharges 检测、让 tag-std 在 verify-rust-std 上工作；完成一些训练营任务；准备下周的 Workshop
+- [第 48 周]: 参加 Rust Workshop；tag-std 支持内置安全属性的 discharges 检查
+- [第 49 周]: distributed-verification 重构：搜集所有可达函数，而不是局限于 proofs
 
 
 [第 1-2 周]: https://github.com/os-checker/os-checker/blob/3fdf88db57403949f95c3034608481d64db80764/assets/development-logs.md
@@ -86,4 +93,11 @@
 [第 40 周]: https://github.com/os-checker/os-checker/discussions/310
 [第 41 周]: https://github.com/os-checker/os-checker/discussions/316
 [第 42 周]: https://github.com/os-checker/os-checker/discussions/339
+[第 43 周]: https://github.com/os-checker/os-checker/discussions/357
+[第 44 周]: https://github.com/os-checker/os-checker/discussions/359
+[第 45 周]: https://github.com/os-checker/os-checker/discussions/364
+[第 46 周]: https://github.com/os-checker/os-checker/discussions/365
+[第 47 周]: https://github.com/os-checker/os-checker/discussions/367
+[第 48 周]: https://github.com/os-checker/os-checker/discussions/368
+[第 49 周]: https://github.com/os-checker/os-checker/discussions/369
 
