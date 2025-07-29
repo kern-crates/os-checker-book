@@ -53,7 +53,11 @@
 - [第 47 周]: tag-std 实现跨 crates 自定义安全属性的 discharges 检测、让 tag-std 在 verify-rust-std 上工作；完成一些训练营任务；准备下周的 Workshop
 - [第 48 周]: 参加 Rust Workshop；tag-std 支持内置安全属性的 discharges 检查
 - [第 49 周]: distributed-verification 重构：搜集所有可达函数，而不是局限于 proofs
-
+- [第 50 周]: os-checker 发布 v0.8.0：集成 AtomVChecker 和 Udeps 检查；tag-std 在 Rust for Linux 代码库进行编译和检查；distributed-verification 缓存函数信息到 SQLite 数据库文件并修复测试
+- [第 51 周]: tag-std 在 Rust for Linux 上运行安全属性标注的代码；distributed-verification 同步 verify-rust-std
+- [第 52 周]: 将 tag-std 应用于 Asterinas OS 安全属性标注；kern-crates 发布 v0.4.0，只检查清单内的仓库
+- [第 53 周]: tag-std：编写 pre-RFC Safety Property System
+- [第 54 周]: 与社区讨论 Pre-RFC: Safety Property System；tag-std：实现新语法 `#[safety { SP1, SP2: "shared reasons" }]`，并支持动态属性定义
 
 [第 1-2 周]: https://github.com/os-checker/os-checker/blob/3fdf88db57403949f95c3034608481d64db80764/assets/development-logs.md
 [第 3 周]: https://github.com/os-checker/os-checker/discussions/15
@@ -100,4 +104,8 @@
 [第 47 周]: https://github.com/os-checker/os-checker/discussions/367
 [第 48 周]: https://github.com/os-checker/os-checker/discussions/368
 [第 49 周]: https://github.com/os-checker/os-checker/discussions/369
-
+[第 50 周]: https://github.com/os-checker/os-checker/discussions/378
+[第 51 周]: https://github.com/os-checker/os-checker/discussions/379
+[第 52 周]: https://github.com/os-checker/os-checker/discussions/381
+[第 53 周]: https://github.com/os-checker/os-checker/discussions/382
+[第 54 周]: https://github.com/os-checker/os-checker/discussions/383
