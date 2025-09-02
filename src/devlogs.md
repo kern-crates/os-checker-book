@@ -58,6 +58,11 @@
 - [第 52 周]: 将 tag-std 应用于 Asterinas OS 安全属性标注；kern-crates 发布 v0.4.0，只检查清单内的仓库
 - [第 53 周]: tag-std：编写 pre-RFC Safety Property System
 - [第 54 周]: 与社区讨论 Pre-RFC: Safety Property System；tag-std：实现新语法 `#[safety { SP1, SP2: "shared reasons" }]`，并支持动态属性定义
+- [第 55 周]: 向 Rust 项目正式提交 RFC《Safety Tags》并广泛讨论；tag-std 配置文件相关功能更新和修复
+- [第 56 周]: distributed-verification 实现初步的 Kani proofs 基础信息和条件筛选 UI；RFC: Safety Tags 社区讨论
+- [第 57 周]: tag-std 实现 any 标签、部署安全文档、打开星绽 RFC 讨论；distributed-verification：修复 JSON 合并问题、新增 UI 功能；verify-rust-std：开始与上游对接
+- [第 58 周]: distributed-verification：UI 新增 proof 和函数源码展示、推迟 GSoC 项目结束时间到 11 月；verify-rust-std & kani：查明编译失败问题；RFC: Safety Tags 继续社区讨论
+- [第 59 周]: os-checker：准备 9 月杭州 RustChinaConf 2025 演讲；tag-std：将 verify-rust-std 纳入 CI，并提供 RAPx 接口；distributed-verification：UI 更新；旁听 Asterinas 和 Axvisor 周会
 
 [第 1-2 周]: https://github.com/os-checker/os-checker/blob/3fdf88db57403949f95c3034608481d64db80764/assets/development-logs.md
 [第 3 周]: https://github.com/os-checker/os-checker/discussions/15
@@ -109,3 +114,8 @@
 [第 52 周]: https://github.com/os-checker/os-checker/discussions/381
 [第 53 周]: https://github.com/os-checker/os-checker/discussions/382
 [第 54 周]: https://github.com/os-checker/os-checker/discussions/383
+[第 55 周]: https://github.com/os-checker/os-checker/discussions/384
+[第 56 周]: https://github.com/os-checker/os-checker/discussions/385
+[第 57 周]: https://github.com/os-checker/os-checker/discussions/386
+[第 58 周]: https://github.com/os-checker/os-checker/discussions/387
+[第 59 周]: https://github.com/os-checker/os-checker/discussions/388
