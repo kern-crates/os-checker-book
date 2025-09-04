@@ -22,7 +22,8 @@
 
 - [工作原理](./under-the-hood.md)
 
-- [组件化目标](./goal.md)
+- [工作进展和目标]()
+  - [组件化](./goal/componentization.md)
 
 - [检查工具笔记]()
   - [Charon](./checker/charon.md)
