@@ -24,6 +24,7 @@
 
 - [工作进展和目标]()
   - [组件化](./goal/componentization.md)
+  - [分布式验证](./goal/distributed-verification.md)
 
 - [检查工具笔记]()
   - [Charon](./checker/charon.md)
