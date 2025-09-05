@@ -22,7 +22,10 @@
 
 - [工作原理](./under-the-hood.md)
 
-- [组件化目标](./goal.md)
+- [工作进展和目标]()
+  - [组件化](./goal/componentization.md)
+  - [分布式验证](./goal/distributed-verification.md)
+  - [安全属性标注](./goal/safety-tags.md)
 
 - [检查工具笔记]()
   - [Charon](./checker/charon.md)
