@@ -2,12 +2,14 @@
 
 ## 背景：验证标准库
 
-验证标准库是一项 AWS 发起的开源项目，通过应用各种形式化验证工具，对 Rust 标准库进行形式化验证。
+验证标准库是一项又 Rust 基金会和亚马逊发起的开源项目，通过应用各种形式化验证工具，对 Rust
+标准库进行形式化验证，并为整个 Rust 生态的形式化验证奠定基础。
 
 * verify-rust-std：[仓库][verify-rust-std] | [文档](https://model-checking.github.io/verify-rust-std/intro.html)
   * 现有验证工具：Kani | GOTO-Transcoder (ESBMC) | VeriFast | Flux
-  * 对此感兴趣的验证工具：Verus | KMIR | RAPx
+  * 对此感兴趣的验证工具：Hax | Verus | KMIR | RAPx
 * Rust 项目目标：
+  * 2024H2: [Contracts and Invariants](https://rust-lang.github.io/rust-project-goals/2024h2/Contracts-and-invariants.html)
   * 2024H2: [Survey tools suitability for Std safety verification](https://rust-lang.github.io/rust-project-goals/2024h2/std-verification.html)
   * 2025H1: [Instrument the Rust standard library with safety contracts](https://rust-lang.github.io/rust-project-goals/2025h1/std-contracts.html)
 * 相关链接：
@@ -22,7 +24,7 @@
 ## 背景：GSoC Rust 2025
 
 > 实现 [Distributed and resource-efficient verification](https://github.com/rust-lang/google-summer-of-code/tree/45141d74c28d91e114cf621d2d56aea6c3f82547?tab=readme-ov-file#distributed-and-resource-efficient-verification),
-> GSoC Rust 2025 （谷歌开源之夏项目中，verify-rust-std 一个提议）
+> GSoC Rust 2025 （谷歌开源之夏项目中，在 verify-rust-std 项目中的一个提议）
 
 （以下是该提议的译文）
 
