@@ -2,8 +2,7 @@
 
 ## 背景：验证标准库
 
-验证标准库是一项又 Rust 基金会和亚马逊发起的开源项目，通过应用各种形式化验证工具，对 Rust
-标准库进行形式化验证，并为整个 Rust 生态的形式化验证奠定基础。
+验证标准库是一项由 Rust 基金会和亚马逊发起的开源项目，通过应用各种形式化验证工具，对标准库进行形式化验证，并为整个生态的形式化验证奠定基础。
 
 * verify-rust-std：[仓库][verify-rust-std] | [文档](https://model-checking.github.io/verify-rust-std/intro.html)
   * 现有验证工具：Kani | GOTO-Transcoder (ESBMC) | VeriFast | Flux
