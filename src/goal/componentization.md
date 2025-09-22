@@ -96,11 +96,12 @@ Charon 一次提供所有必要的信息，编写了 rustc driver，从而工具
 
 | checker   | 功能                                                             | 重写                                                       |
 |-----------|------------------------------------------------------------------|------------------------------------------------------------|
-| [Rudra]   | 查找 panic 导致的内存安全问题；缺乏 Send/Sync 约束导致的并发问题 | 已完成 [charon-rudra]，但需支持完整的[测试套件][rudra-poc] |
+| [Rudra]   | 查找 panic 导致的内存安全问题；缺乏 Send/Sync 约束导致的并发问题 | 已完成 [charon-rudra][charon-rudra-full]，但需支持完整的[测试套件][rudra-poc] |
 | [RAPx]    | 分析指针别名、内存释放和泄露、API 依赖                           | 有意切换到 StableMir                                       |
 | [Lockbud] | 检测死锁等并发问题                                               | 正在切换到 StableMir                                       |
 
 [Rudra]: https://github.com/sslab-gatech/Rudra
+[charon-rudra-full]: https://github.com/os-checker/charon-rudra
 [rudra-poc]: https://github.com/sslab-gatech/Rudra-PoC
 [RAPx]: https://github.com/Artisan-Lab/RAPx
 [Lockbud]: https://github.com/BurtonQin/lockbud
