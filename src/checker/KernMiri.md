@@ -57,3 +57,7 @@
 3. 调研若干 Rust OS，研究移植 KernMiri 所需要的 shims，确定最终 KernMiri 所需要提供的接口。
 4. 用户友好性加强，让 KernMiri 的配置性提高，且不影响 miri 其他场景下的使用。同时努力做到让用户 OS 所需要的侵入式改动能容易地被 cfg 滤去。
 5. 完善 KernMiri 实现和功能；目前 KernMiri 模拟多核的实现上仍有欠缺；同时可以进一步之前可检查的 OS UB。
+
+罗绍玮同学的课程工作：
+* [中期报告](https://github.com/billlosw/kern_miri/blob/40be3e5141bebecc20e5da84a6fa1aa5c5cba8df/os_training/os_train_midterm.pptx)
+
