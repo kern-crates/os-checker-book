@@ -58,7 +58,7 @@ To foster reproducibility, this artifact includes a Dockerfile, as well as instr
 
 <summary>相关术语：ULLBC 和 LLBC 介绍</summary>
 
-在论文中，ULLBC （Unstructured Low-Level Borrow Calculus）和 LLBC （Low-Level Borrow Calculus ）是 Charon 框架为 Rust 语言设计的两种抽象语法树（AST）表示形式，用于简化 Rust 程序的分析。
+在论文中，ULLBC （Unstructured Low-Level Borrow Calculus）和 LLBC （Low-Level Borrow Calculus ）是 Charon 框架为 Rust 语言设计的两种代码表示形式，用于简化 Rust 程序的分析。
 
  ULLBC （ Unstructured  Low - Level  Borrow  Calculus ）
 - **定义**： ULLBC 是基于 Rust 编译器中间表示（MIR）的控制流图（CFG）表示形式。它保留了 MIR 的低级语义，如移动（move）、复制（copy）和显式的借用（borrow）与重新借用（reborrow）。
