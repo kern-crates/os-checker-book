@@ -61,3 +61,48 @@
 罗绍玮同学的课程工作：
 * [中期报告](https://github.com/billlosw/kern_miri/blob/40be3e5141bebecc20e5da84a6fa1aa5c5cba8df/os_training/os_train_midterm.pptx)
 
+
+## 杂记
+
+### 从源码构建 Rust
+
+Miri 使用特定提交的 Rust，但这些提交构建的 Rust 工具链在几个月之后就会被清理而无法下载。
+
+解决措施有两个：
+* 采用最近的一个夜间版本。通常该提交之后的第一个夜间版本与这个提交的 Rust 
+  代码改动不大，因此可以编译 Miri。在 Miri 脚本中，需要一个叫做 miri 的工具链，因此可以通过以下方式替换
+  ```bash
+  rustup toolchain install nightly-2024-11-03
+  rustup toolchain link miri $(rustc +nightly-2024-11-03 --print sysroot)
+  ```
+
+* 源码构建这个特定的 Rust。这可能还需要源码编译 LLVM，因此需要花费很长的时间。如果最近的那个夜间版本不能编译
+  Miri，那么才需要这么做：
+  ```bash
+  # 我们需要完整的工具链，因此采用 stage2
+  rust $ ./x build --stage 2 rustfmt clippy cargo
+  rust $ rustup toolchain link miri build/aarch64-unknown-linux-gnu/stage2
+  ```
+
+  ```toml
+  profile = "tools"
+  change-id = 132494
+
+  # Use locally built tools, instead of downloading them.
+  [build]
+  cargo = "/home/gh-zjp-CN/.rustup/toolchains/nightly-2024-11-03-aarch64-unknown-linux-gnu/bin/cargo"
+  rustc = "/home/gh-zjp-CN/.rustup/toolchains/nightly-2024-11-03-aarch64-unknown-linux-gnu/bin/rustc"
+  rustfmt = "/home/gh-zjp-CN/.rustup/toolchains/nightly-2024-11-03-aarch64-unknown-linux-gnu/bin/rustfmt"
+  cargo-clippy = "/home/gh-zjp-CN/.rustup/toolchains/nightly-2024-11-03-aarch64-unknown-linux-gnu/bin/cargo-clippy"
+
+  [rust]
+  channel = "nightly" # full toolchain, otherwise dev toolchain won't generate commit-hash or other stuff
+  download-rustc = false
+
+  [llvm]
+  download-ci-llvm = false
+  ```
+
+相关的讨论：
+* [Build with nightly Miri (not arbitrary master snapshot)?](https://rust-lang.zulipchat.com/#narrow/channel/269128-miri/topic/Build.20with.20nightly.20Miri.20.28not.20arbitrary.20master.20snapshot.29.3F/with/545808655)
+* [How to install an old commit version of rustc?](https://rust-lang.zulipchat.com/#narrow/channel/131828-t-compiler/topic/.E2.9C.94.20How.20to.20install.20an.20old.20commit.20version.20of.20rustc.3F/with/541784962)
