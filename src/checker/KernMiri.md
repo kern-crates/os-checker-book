@@ -118,3 +118,124 @@ Miri 使用特定提交的 Rust，但这些提交构建的 Rust 工具链在几�
 相关的讨论：
 * [Build with nightly Miri (not arbitrary master snapshot)?](https://rust-lang.zulipchat.com/#narrow/channel/269128-miri/topic/Build.20with.20nightly.20Miri.20.28not.20arbitrary.20master.20snapshot.29.3F/with/545808655)
 * [How to install an old commit version of rustc?](https://rust-lang.zulipchat.com/#narrow/channel/131828-t-compiler/topic/.E2.9C.94.20How.20to.20install.20an.20old.20commit.20version.20of.20rustc.3F/with/541784962)
+
+## KernMiri 源码阅读
+
+### 对 Miri 的改进
+
+1. 内存分类 (memory type)：支持内核内存、static 等内存类型的处理
+2. 内存分页管理：物理内存模拟、增加页表映射
+3. 线程管理中增加内核栈内存
+4. CPU 模拟支持：CPU 局部变量、CPU 绑定线程（比如线程随机化转化为 CPU 随机化）
+
+来自陈工程师的 [overview] 资料。
+
+[overview]: https://hackmd.io/bLRtlCH0T9udi9OLGrrXuQ
+
+### 命令行代码
+
+`src/bin/miri.rs` 是对 rustc 进行包装的程序，编译二进制项目的文件，从入口函数开始分析和检查代码。
+
+包装程序通过编译器驱动程序的方式调用编译器内部的 API 来触发正常的编译，并且注入额外的分析逻辑。
+
+执行编译是通过调用 `rustc_driver::RunCompiler` 来实现的。
+
+注入的方式是实现 `rustc_driver::Callbacks` trait，覆盖其中的一些方法来在某些固定的阶段执行我们编写的回调的代码。
+Miri 有两个结构实现了它：
+* `MiriCompilerCalls` 是 Miri 分析代码的回调逻辑，根据传递的 Miri 参数进行复杂的代码检查，但不生成二进制文件。
+  * `miri::eval_entry` 是进行 Miri 分析的入口；分析代码存放在 `src/lib.rs` 中。
+* `MiriBeRustCompilerCalls` 也是 Miri 的分析回调逻辑，但只是在直接转发给编译器时做了一点处理，生成二进制文件。
+
+`cargo-miri/src/main.rs` 是对 cargo 命令的包装，以及一些初始化、与 Rustdoc 交互的逻辑。
+
+### `eval_entry`
+
+核心组成（除了处理错误）：
+* `init_miri_physical_mem()`
+* `create_ecx(tcx, entry_id, entry_type, &config)`
+* `init_boot_pt(&mut ecx)`
+* `ecx.set_page_table(page_table)`
+* `ecx.run_threads()`
+
+## rustc API
+
+### `rustc_const_eval::interpret`
+
+> An interpreter for MIR used in <abbr title="Compile-Time Function Evaluation">CTFE</abbr> and by miri.
+
+常量解释器是执行 MIR 的虚拟机，不编译到机器码，被编译器和 Miri 共享使用代码。
+
+### MIR 的常量
+
+常量计算的典型场景：
+* static item 的 initializer （也就是等号右边的结构）
+* 数组长度
+* enum variant discriminants （避免不同的变体具有相同的值）
+* patterns （避免重叠）
+* 更多见 [Reference#const-eval](https://doc.rust-lang.org/reference/const_eval.html)
+
+MIR 中的 constants 分为两类
+
+|            | MIR constants             | Type system constants                        |
+|------------|---------------------------|----------------------------------------------|
+| 未计算常量 | [mir::Const]              | [ty::Const]                                  |
+| 已计算常量 | [mir::ConstValue]         | [ty::ValTree]                                |
+| 计算函数   | [op_to_const]             |                                              |
+| 含义或用途 | 用作 MIR 的一种 [Operand] | 类型系统中的常量，尤其是数组的长度、常量泛型 |
+
+两者交互：每当常量泛型参数作为 Operand 的时候，[mir::Const::Ty] 把任意的 Type system constants 转化为 MIR constants。
+
+[mir::Const]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/mir/enum.Const.html
+[mir::ConstValue]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/mir/enum.ConstValue.html
+[op_to_const]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_const_eval/const_eval/eval_queries/fn.op_to_const.html
+[ty::Const]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/struct.Const.html
+[ty::ValTree]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/ty/struct.ValTree.html
+[Operand]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/mir/enum.Operand.html
+[mir::Const::Ty]: https://doc.rust-lang.org/nightly/nightly-rustc/rustc_middle/mir/enum.Const.html#variant.Ty
+
+Ref:
+* [`rustc_const_eval::interpret`](https://doc.rust-lang.org/nightly/nightly-rustc/rustc_const_eval/interpret/index.html) 模块
+* [rustc-dev-guide: const-eval](https://rustc-dev-guide.rust-lang.org/const-eval.html)
+* [rustc-dev-guide: const-eval#interpret](https://rustc-dev-guide.rust-lang.org/const-eval/interpret.html)
+
+### Pointer Provenance
+
+Pointer provenance 或者 provenance 描述的是指针携带的分配信息。
+
+该名词翻译为“指针来源”，也就是是指针来自的分配的信息。但 provenance 本身的英文含义是”来源+用于证明的依据“，因此“来源”这个翻译有失偏颇，
+它在这个语境下强调这个信息用来证明指针来自该分配。
+
+虽然最终的二进制产物中，指针只有整数（地址信息）一种形式，并没不带有分配的信息，但编译器和优化会考虑 provenance，
+将不同的分配产生的指针视为不同的指针。这意味着，源码使用整数（也就是地址）来比较指针，但编译器还使用 provenance 比较指针。
+
+不同的分配可以指以下情况
+* 不同的分配器产生的分配
+* 相同的分配器在相同的时间段、不同的地址上分配
+* 相同的分配器在不同的时间段、对相同地址的分配
+
+[地址][address] 是一个整数，表明进程内存中有数据存放。
+
+[分配][allocation] 表示可从 Rust 中进行寻址的一块内存。
+* 可寻址 (addressable) 表示可以通过内存直接定位、进行访问或者操作 —— 也就是通过地址读取值、或者赋给值。
+* 这块内存目前 Rust 假设是连续的地址范围、一次全部释放，但将来可能允许有洞、增加或缩小分配范围。
+* 创建分配，可发生在堆、栈、globals (statics 和 consts) 等对象上，也可发生在 Rust 无法感知的函数、虚表上。
+* 即使是空分配（范围为空，即长度为零），也有基地址 (base address)；如果两个不同的分配有相同的基地址，那么其中一个必须为空分配。
+* 分配不会跟踪存放的数据的类型；被分配的数据是按照 [abstract bytes] 存放的。
+
+[provenance]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#abstract-byte
+[address]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#memory-address
+[allocation]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#allocation
+[abstract bytes]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#abstract-byte
+
+### Priroda
+
+仓库：<https://github.com/oli-obk/priroda>
+
+由 Oli 编写的图形界面调试器，已不再更新。
+
+但某些编译器 API 或者 Miri 代码注释提及了它。
+
+### 视频
+
+* [Unsafe Rust and Miri by Ralf Jung - Rust Zürisee June 2023](https://www.youtube.com/watch?v=svR0p6fSUYY)
+* [oli-obk on miri and constant evaluation](https://www.youtube.com/watch?v=5Pm2C1YXrvM) (2019)
