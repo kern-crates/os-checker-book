@@ -1,25 +1,5 @@
 # KernMiri
 
-## miri_asterinas
-
-分支：<https://github.com/asterinas/atc25-artifact-evaluation/tree/miri_asterinas>
-
-修改内容：
-* 添加 miri 等价物的函数调用（或符号？）
-* 添加 miri arch 模块来模拟平台代码
-  * 有些代码是原地修改的，尤其把 x64 的代码改成 miri 的版本，而未采用条件编译
-* osdk 添加 miri 子命令，生成模板代码
-* 把指针运算改为数值运算（以规避 miri 的严格的指针检查？）
-* 移动测试到单独的模块
-
-## kern_miri
-
-分支：<https://github.com/asterinas/atc25-artifact-evaluation/tree/kern_miri>
-
-修改内容 (shims)：
-* 任务管理支持：添加 CPU 和 thread 相关的字段和方法
-* 内存管理支持：页表操作、内核内存、物理内存
-
 
 ## 讨论记录
 
@@ -28,6 +8,8 @@
 * 让 KernMiri 作为单独的工具，可被其他 OS 使用：
   * 进一步地完善实现和文档，明确它需要的 shims，以及增加一些用户友好的命令行逻辑之类的
   * 扩展检查功能，让其可以检查一些 OS specific 的问题
+* 检测 ArceOS
+  * 如何修改 ArceOS 代码来应用 KernMiri 
 * 完善 KernMiri：
   * 让 KernMiri 支持最新的星绽分支
   * 集成 KernMiri 到星绽 CI
@@ -59,10 +41,40 @@
 5. 完善 KernMiri 实现和功能；目前 KernMiri 模拟多核的实现上仍有欠缺；同时可以进一步之前可检查的 OS UB。
 
 罗绍玮同学的课程工作：
-* [中期报告](https://github.com/billlosw/kern_miri/blob/40be3e5141bebecc20e5da84a6fa1aa5c5cba8df/os_training/os_train_midterm.pptx)
+* [中期报告](https://github.com/billlosw/kern_miri/blob/40be3e5141bebecc20e5da84a6fa1aa5c5cba8df/os_training/os_train_midterm.pptx)。
+* 修改过 [axplat](https://github.com/billlosw/axplat_crates/tree/axplat-kernmiri)，简易的笔记在 doc 目录。
+  * axplat 对应的 [KernMiri 分支](https://github.com/billlosw/kern_miri/tree/KernMiri-2025-05-20)
 
+KernMiri 面临三个工具链的版本：20241104（原先的），20250201（星绽目前的工具链版本），20250520（ArceOS在用的版本）。
 
 ## 杂记
+
+<details>
+
+<summary>旧</summary>
+
+miri_asterinas：
+
+分支：<https://github.com/asterinas/atc25-artifact-evaluation/tree/miri_asterinas>
+
+修改内容：
+* 添加 miri 等价物的函数调用（或符号？）
+* 添加 miri arch 模块来模拟平台代码
+  * 有些代码是原地修改的，尤其把 x64 的代码改成 miri 的版本，而未采用条件编译
+* osdk 添加 miri 子命令，生成模板代码
+* 把指针运算改为数值运算（以规避 miri 的严格的指针检查？）
+* 移动测试到单独的模块
+
+kern_miri：
+
+分支：<https://github.com/asterinas/atc25-artifact-evaluation/tree/kern_miri>
+
+修改内容 (shims)：
+* 任务管理支持：添加 CPU 和 thread 相关的字段和方法
+* 内存管理支持：页表操作、内核内存、物理内存
+
+
+</details>
 
 ### 从源码构建 Rust
 
