@@ -63,6 +63,13 @@
 - [第 57 周]: tag-std 实现 any 标签、部署安全文档、打开星绽 RFC 讨论；distributed-verification：修复 JSON 合并问题、新增 UI 功能；verify-rust-std：开始与上游对接
 - [第 58 周]: distributed-verification：UI 新增 proof 和函数源码展示、推迟 GSoC 项目结束时间到 11 月；verify-rust-std & kani：查明编译失败问题；RFC: Safety Tags 继续社区讨论
 - [第 59 周]: os-checker：准备 9 月杭州 RustChinaConf 2025 演讲；tag-std：将 verify-rust-std 纳入 CI，并提供 RAPx 接口；distributed-verification：UI 更新；旁听 Asterinas 和 Axvisor 周会
+- [第 60 周]: os-checker book 新增三个页面，关于工作进展和贡献点；distributed-verification 支持 libcore 之外的 Kani 证明；更新 Safety Tags RFC
+- [第 62 周]: os-checker：在 RustChinaConf2025 演讲 | 手记 | 被旋武社区收录；与星绽开发人员就安全属性标注问题进行答疑和讨论；初步实现 safety-lsp
+- [第 63 周]: safety-lsp 实现安全属性补全和 VSCode 插件功能；准备 os-checker 10 月 4 日线上分享 PPT；尝试复现星绽 KernMiri
+- [第 64-65 周]: os-checker 10 月 4 日线上报告；safety-tool 发布 v0.4.0；星绽 KernMiri 源码阅读和交流
+- [第 66 周]: Distributed-Verification WebUI 更新：增加 Kani 验证时间和数量分布图、支持 autoharnesses
+- [第 67 周]: 准备分享《编写 Rust 静态分析工具》；tag-std 发布 v0.4.1；distributed-verification 更新
+- [第 68 周]: Rust 编译器训练营课程分享《编写 Rust 静态分析工具》；distributed-verification 更新
 
 [第 1-2 周]: https://github.com/os-checker/os-checker/blob/3fdf88db57403949f95c3034608481d64db80764/assets/development-logs.md
 [第 3 周]: https://github.com/os-checker/os-checker/discussions/15
@@ -119,3 +126,10 @@
 [第 57 周]: https://github.com/os-checker/os-checker/discussions/386
 [第 58 周]: https://github.com/os-checker/os-checker/discussions/387
 [第 59 周]: https://github.com/os-checker/os-checker/discussions/388
+[第 60 周]: https://github.com/os-checker/os-checker/discussions/389
+[第 62 周]: https://github.com/os-checker/os-checker/discussions/389
+[第 63 周]: https://github.com/os-checker/os-checker/discussions/391
+[第 64-65 周]: https://github.com/os-checker/os-checker/discussions/392
+[第 66 周]: https://github.com/os-checker/os-checker/discussions/393
+[第 67 周]: https://github.com/os-checker/os-checker/discussions/394
+[第 68 周]: https://github.com/os-checker/os-checker/discussions/395
