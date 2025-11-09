@@ -222,10 +222,32 @@ Pointer provenance 或者 provenance 描述的是指针携带的分配信息。
 * 即使是空分配（范围为空，即长度为零），也有基地址 (base address)；如果两个不同的分配有相同的基地址，那么其中一个必须为空分配。
 * 分配不会跟踪存放的数据的类型；被分配的数据是按照 [abstract bytes] 存放的。
 
-[provenance]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#abstract-byte
+[provenance]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#pointer-provenance
 [address]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#memory-address
 [allocation]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#allocation
 [abstract bytes]: https://rust-lang.github.io/unsafe-code-guidelines/glossary.html#abstract-byte
+
+### Abstract Bytes
+
+[抽象字节][abstract bytes] 是在 Miri 抽象机器角度看待的“字节”。至少有以下原因导致我们无法只以 u8 （0..=255) 值的方式来处理字节：
+* 每个字节可能携带分配信息（分配 ID 和偏移量）—— 通过偏移量访问不同的分配的字节是未定义行为
+  * 见 Ralf 博客《[Pointers Are Complicated, or: What's in a Byte?](https://www.ralfj.de/blog/2018/07/24/pointers-and-bytes.html)》
+* 每个字节可能未被初始化 —— 访问未被初始化的字节是未定义行为
+  * 见 Ralf 博客《["What The Hardware Does" is not What Your Program Does: Uninitialized Memory](https://www.ralfj.de/blog/2019/07/14/uninit.html)》
+
+在硬件角度看，字节只是一个 u8 的值，但 Rust 编译器、LLVM （C/C++ 编译器）出于优化，需要以自己的方式（需要额外的状态来）处理字节问题，而不仅仅涉及字节的值。
+
+Rust 抽象机器（Miri）的主要目的是解决编译器优化带来的问题，让组合优化的结果是一致的、生成的代码是可靠的。当前它看待的抽象字节可以表达为：
+
+```rust
+pub enum AbstractByte<Provenance> {
+    /// An uninitialized byte.
+    Uninit,
+    /// An initialized byte with a value in `0..256`,
+    /// optionally with some provenance (if it is encoding a pointer).
+    Init(u8, Option<Provenance>),
+}
+```
 
 ### Priroda
 
