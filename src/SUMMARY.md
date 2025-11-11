@@ -33,5 +33,6 @@
   - [Kani](./checker/kani.md)
   - [RAPx](./checker/rap.md)
   - [KernMiri](./checker/KernMiri.md)
+    - [ArceOS](./checker/KernMiri/ArceOS.md)
 
 - [开发日志](./devlogs.md)
