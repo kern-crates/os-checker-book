@@ -64,3 +64,22 @@ Hello, world!
 
 因此，对于测试 ArceOS，通常更改参数来编译和执行代码，比如 `make run A=path/to/project` 编译为
 x86_64-unknown-none，并在 QEMU 上运行起来。具体参数需阅读 Makefile 文件。
+
+## 编译细节
+
+* 对于宿主机平台，ArceOS 的组件库可以正常编译。即 `cargo build` 通常可以工作。
+* 对于裸机平台，依赖 axhal （或者 axfeat、 axstd）的库需要开启 defplat feature，以在编译期间引入正确的依赖。
+* 但如果依赖需要链接脚本，那么需要设置 `AX_CONFIG_PATH` 指向平台的配置文件，axconfig 在 build.rs 
+  执行的期间会读取配置文件来自动生成平台链接脚本（路径为 `<OUT_DIR>/<TARGET>/<BUILD_MODE>/liner_<PLATFORM>.lds`），从而添加编译器的链接参数：
+```bash
+cargo axplat info -C . -c axplat-aarch64-qemu-virt
+# /home/gh-zjp-CN/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/axplat-aarch64-qemu-virt-0.2.0/axconfig.toml
+
+export AX_CONFIG_PATH=$(cargo axplat info -C . -c axplat-aarch64-qemu-virt)
+export RUSTFLAGS=-Clink-arg=-T/home/gh-zjp-CN/arceos/arceos/target/aarch64-unknown-none-softfloat/debug/linker_aarch64-qemu-virt.lds
+cargo b --target aarch64-unknown-none-softfloat -F axhal/defplat # 或者 -F axstd/defplat
+```
+* 有时需要安装 axconfig-gen 和 cargo-axplat 工具（通过 `cargo install axconfig-gen cargo-axplat`），
+  来处理 axconfig 的 TOML 配置文件。比如 axconfig-gen 通过合并多个配置文件并通过命令行参数读取或者指定字段的值；
+  或者如上适应 cargo-axplat 查询平台配置文件的本地路径。使用 `--help` 参数查看相应的使用说明。
+
