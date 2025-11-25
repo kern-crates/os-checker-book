@@ -47,9 +47,9 @@
   * PanicSafety: 无 panic 应该是一种安全属性。内核应该处理所有异常，而不应该崩溃。[panic 示例](https://github.com/Artisan-Lab/tag-asterinas/blob/5d36406b85c4e07605af7bc9293b7fd414a6dddd/ostd/src/mm/page_table/cursor/mod.rs#L514-L521)
 
 问题：
-* 归纳成参数 vs 单独的属性名（泛用 vs 特指/可读）
+* 归纳成参数 vs 单独的属性名（泛用/参数化 vs 特指/可读性）
 * NotPostToFunc 是晨昊根据 API 自行添加的。需要某种数据流分析，以方便审计。
-* 参不考虑：子属性（compound SP，比如 ValidPtr 是很多安全要求的集合）、条件属性等更复杂的表达式构成的属性。
+* 暂不考虑：子属性（compound SP，比如 ValidPtr 是很多安全要求的集合）、条件属性等更复杂的表达式构成的属性。
 
 safety-tool 功能增强：
 * 函数调用关系属性检测：该类属性占比很大、比较容易实现和演示。

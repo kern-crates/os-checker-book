@@ -34,7 +34,7 @@
   - [RAPx](./checker/rap.md)
   - [Safety Tags](./checker/safety-tags.md)
   - [KernMiri](./checker/KernMiri.md)
-    - [ArceOS](./checker/KernMiri/Asterinas.md)
+    - [Asterinas](./checker/KernMiri/Asterinas.md)
     - [ArceOS](./checker/KernMiri/ArceOS.md)
     - [Priroda](./checker/KernMiri/Priroda.md)
 
