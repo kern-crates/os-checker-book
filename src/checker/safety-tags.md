@@ -43,12 +43,16 @@
   * ValidAccessAddr(addr, access): "{addr} should be valid for {access}."
   * ValidBaseAddr(addr, hardware):  "{addr} should be a valid base address of {hardware}."
   * ValidInstanceAddr(addr, type): "{addr} should point to a valid instance of {type}."
+* 与其他属性的关联：
+  * ReferTo(func): "This function should meet the safety requirement of {func}."
+  * ReferToSP(func, sp_target)：指明某一项安全要求 ❔
+  * Ref(entity): 双向引用
 * 补充：
   * PanicSafety: 无 panic 应该是一种安全属性。内核应该处理所有异常，而不应该崩溃。[panic 示例](https://github.com/Artisan-Lab/tag-asterinas/blob/5d36406b85c4e07605af7bc9293b7fd414a6dddd/ostd/src/mm/page_table/cursor/mod.rs#L514-L521)
 
 问题：
 * 归纳成参数 vs 单独的属性名（泛用/参数化 vs 特指/可读性）
-* NotPostToFunc 是晨昊根据 API 自行添加的。需要某种数据流分析，以方便审计。
+* NotPostToFunc 是晨昊根据 API 自行添加的。需要删除这些标注；最好利用某种数据流分析，以方便审查代码影响。
 * 暂不考虑：子属性（compound SP，比如 ValidPtr 是很多安全要求的集合）、条件属性等更复杂的表达式构成的属性。
 
 safety-tool 功能增强：
