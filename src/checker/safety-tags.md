@@ -59,3 +59,40 @@ safety-tool 功能增强：
 * 函数调用关系属性检测：该类属性占比很大、比较容易实现和演示。
 * （低优先级）LSP 感知属性标注情况：提供缺失的属性补全，而不是提供所有属性补全。
 
+### RFC 大纲
+
+> 基于提交给 Rust 社区的 RFC：<https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md>
+>
+> 星绽 RFC 模板：<https://asterinas.github.io/book/rfcs/rfc-template.html>
+>
+> **注意：紧密结合星绽的特点和需求。**
+
+Summary：
+
+
+Motivation：前两个是重点
+* [Safety Invariants: Forgotten by Authors, Hidden from Reviewers](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#safety-invariants-forgotten-by-authors-hidden-from-reviewers) ⭐
+* [Safety Invariants Have No Semver](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#safety-invariants-have-no-semver) ⭐
+  * ostd 也是版本语义控制的
+  * 但更实际的作用：任何一处安全要求发生变化，我们的工具能够根据改动造成的影响，提供不安全要求影响评估信息（变化的内容、波及的函数声明和调用），
+    意味着修改不安全要求依然保证审计的完整性（不会留下过时的不安全代码，不会遗漏应该修正的不安全代码）。
+* [Granular Unsafe: How Small Is Too Small?](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#safety-invariants-have-no-semver)
+* [Formal Contracts, Casual Burden](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#formal-contracts-casual-burden)
+
+Design：(Explain how it works, how it interacts with other parts of the system, and any new APIs or concepts being introduced.)
+* [Guide-level explanation](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#guide-level-explanation) ⭐
+* [Reference-level explanation](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#reference-level-explanation) （不重要）
+* 星绽的最大特点：ostd 是唯一存放不安全代码的库。因此关注于
+  * 安全标注的语法
+  * 我们的工具能够检查什么问题
+  * 如何检查这些问题
+  * 集成到星绽的步骤：调研（总体介绍星绽的安全属性）、初期（哪些属性先应用）、评估效果（我们会关注安全属性方面的星绽 PR 审查）、迭代
+
+Drawbacks, Alternatives, and Unknown：
+* [Drawbacks](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#drawbacks)
+* [Rationale and alternatives](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#rationale-and-alternatives)
+* [Unresolved questions](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#unresolved-questions) 不太相关
+
+Prior Art and References：
+* [Prior art](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#prior-art)
+* 引用 tag-std 仓库和论文
