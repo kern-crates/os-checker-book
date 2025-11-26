@@ -4,6 +4,9 @@
 
 ## 星绽
 
+晨昊 9 月 25 日分享的数据：
+![](https://github.com/user-attachments/assets/bb6f264e-724c-488a-8617-3b85dde36e95)
+
 ### 属性分类
 
 和晨昊的分类 [Asterinas-safety-properties.md](https://github.com/Artisan-Lab/tag-std/blob/main/Asterinas-safety-properties.md) 有些区别。
@@ -13,7 +16,7 @@
 * 数值：比较（大小、相等）、范围等
 
 操作系统的 SP：以逻辑属性为主。
-* 函数调用关系属性：
+* 函数调用关系属性 (LTL, Linear Temporal Logic or CTL, Computation Tree Logic)：
   * CallOnce
   * (Not)PostToFunc
   * (Not)PreToFunc
@@ -25,13 +28,13 @@
   * MutAccess（独占访问）
   * Unaccessed（不可访问）
   * Forgetten（[泄露](https://smallcultfollowing.com/babysteps/blog/2025/10/21/move-destruct-leak/)）
-  * OriginateFrom（资源来源）
+  * ~OriginateFrom~ ReturnedByFn（资源来源）
 * 上下文属性（时间段）：
   * 链接期间（Section）
   * Context(after, before): "This function should be executed after {after} before {before}."
     * CPU 初始化阶段：Context("BSP starts", "any AP starts")、 Context("boot starts", "boot ends")
   * 内核态（KernelMemorySafe）
-  * 用户态（UserSpace）
+  * 用户态（UserSpace(start, end): "{start}..{end} should be within user space."）
   * 中断期间（未有单独的属性）preempt 相关？
   * 硬件使用逻辑：
     * NonModifying（寄存器）
@@ -52,11 +55,13 @@
 
 问题：
 * 归纳成参数 vs 单独的属性名（泛用/参数化 vs 特指/可读性）
-* NotPostToFunc 是晨昊根据 API 自行添加的。需要删除这些标注；最好利用某种数据流分析，以方便审查代码影响。
+* NotPostToFunc 是晨昊根据 API 自行添加的。需要删除这些标注。
+* 针对 ~OriginateFrom~ ReturnedByFn 利用某种数据流分析，以减少标注。
 * 暂不考虑：子属性（compound SP，比如 ValidPtr 是很多安全要求的集合）、条件属性等更复杂的表达式构成的属性。
 
-safety-tool 功能增强：
-* 函数调用关系属性检测：该类属性占比很大、比较容易实现和演示。
+Safety-tool 功能增强：
+* 函数调用关系属性检测：该类属性占比很大、比较容易实现和演示、不需要 discharge。
+* 增加 metrics 输出：标签统计、discharge 情况统计。
 * （低优先级）LSP 感知属性标注情况：提供缺失的属性补全，而不是提供所有属性补全。
 
 ### RFC 大纲
