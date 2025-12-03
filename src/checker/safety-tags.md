@@ -64,6 +64,15 @@ Safety-tool 功能增强：
 * 增加 metrics 输出：标签统计、discharge 情况统计。
 * （低优先级）LSP 感知属性标注情况：提供缺失的属性补全，而不是提供所有属性补全。
 
+审查清单考虑的因素：
+
+| 变化者           | 变化表现                    | 影响                                   |
+|------------------|-----------------------------|----------------------------------------|
+| 安全属性定义     | 名称、描述等等              | 旧安全属性不再适用，考虑新安全属性     |
+| 不安全函数源代码 | 参数、返回值、主体、宏/属性 | 不安全函数的功能是否匹配声明的安全属性 |
+| 不安全函数被调用 | 函数参数的值、安全注释      | 不安全函数的使用是否依然满足安全属性   |
+| 安全属性的关联性 | 指向的额外的函数或安全属性  | 重新考虑关联性是否适用                 |
+
 ### RFC 大纲
 
 > 基于提交给 Rust 社区的 RFC：<https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md>
@@ -101,3 +110,25 @@ Drawbacks, Alternatives, and Unknown：
 Prior Art and References：
 * [Prior art](https://github.com/Artisan-Lab/rfcs/blob/safety-tags/text/0000-safety-tags.md#prior-art)
 * 引用 tag-std 仓库和论文
+
+
+### 问题搜集：注释不一致
+
+| Culprit | Reason                                              | Fix     | Fixed By Us? | How Safety Tags Help to Prevent                        |
+|---------|-----------------------------------------------------|---------|:------------:|--------------------------------------------------------|
+| [#2547] | [7d21144d] 修改了不安全函数的实现，但未更新安全注释 | [#2508] |      ❌      | （审计流程）不安全函数的实现发生变化，重新审查安全标签 |
+| [#2508] | 修改汇编的符号名，但未更新                          | [#2573] |      ❌      | 无帮助                                                 |
+
+
+[#2547]: https://github.com/asterinas/asterinas/pull/2547
+[7d21144d]: https://github.com/asterinas/asterinas/commit/7d21144da6140cda8bcc19fdd2868d361e24242e
+[#2508]: https://github.com/asterinas/asterinas/pull/2508
+[#2573]: https://github.com/asterinas/asterinas/pull/2573
+
+### 问题搜集：可简化的安全注释
+
+| Target  | Reason                                          | How Safety Tags improve                                               |
+|---------|-------------------------------------------------|-----------------------------------------------------------------------|
+| [#2530] | 识别和记录 Intel TDX 环境中潜在的 Iago 攻击途径 | 这些注释其实就是 TDX 机密计算的安全要求，覆盖内核核心设计和不安全代码 |
+
+[#2530]: https://github.com/asterinas/asterinas/pull/2530
