@@ -32,7 +32,9 @@
   - [Rudra](./checker/rudra.md)
   - [Kani](./checker/kani.md)
   - [RAPx](./checker/rap.md)
+  - [Safety Tags](./checker/safety-tags.md)
   - [KernMiri](./checker/KernMiri.md)
+    - [Asterinas](./checker/KernMiri/Asterinas.md)
     - [ArceOS](./checker/KernMiri/ArceOS.md)
     - [Priroda](./checker/KernMiri/Priroda.md)
 
