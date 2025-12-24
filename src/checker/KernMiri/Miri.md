@@ -278,3 +278,29 @@ functions are supported
 
 OS APIs capabilities:
 * Files and file descriptor/handle manipulation:
+  * basic file operations like open, read, write, and close
+  * POSIX pipes and streaming sockets
+  * epoll and eventfd on Linux
+  * network sockets are not supported yet
+* File system manipulation:
+  * POSIX listing directories and renaming and removing files
+* Concurrency APIs:
+  * spawning threads
+  * pthread synchronization primitives
+  * futex syscalls on Linux/MacOS/Windows/FreeBSD
+  * interact with data race detector
+* Thread-local state: 
+  * TLS is supported to make `thread_local!` work
+  * Dealing with TLS destructors are the difficulty
+* Timekeeping:
+  * current system time
+  * thread sleep (and thread scheduling),
+  * timeout and a general mechanism of “blocking a thread with a timeout”, and
+  an associated “unblock callback”
+  * sources of time (system clock and strictly monotone clock). Implement
+* Intel vendor intrinsics:
+  * SSE/AVX, cryptographic intrinsics through `std::arch`
+  * and 100+ Intel-specific intrinsics
+* The Rust standard library:
+  * full implementation of the process environment to make env var work
+  * obtain strong random numbers from OS to mitigate HashDoS attacks
