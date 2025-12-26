@@ -304,3 +304,24 @@ OS APIs capabilities:
 * The Rust standard library:
   * full implementation of the process environment to make env var work
   * obtain strong random numbers from OS to mitigate HashDoS attacks
+  * more APIs: weak symbols; standard C functions, such as malloc, free, exit
+
+## Evaluation
+
+Large-scale compatibility:
+* tested 100778 out of 180k crates
+* took 11 days ≈ 1.9 CPU-years
+* tests: unit, integration and doc
+* run unit and integration tests with cargo-nextest and 60s timeout per test
+* doc test: 1 hour timeout
+* for the entire crate: 1-hour timeout, 8 GiB memory limit
+* filtered out crates that did not build, or that had no tests
+* disabled Miri’s memory leak checker
+* turned on layout randomization to uncover unsafe code making incorrect
+assumptions about type layout
+
+![](https://github.com/user-attachments/assets/75488f10-0ba4-4b76-bd2f-83c41484cc62)
+
+Each crate is put into exactly one category, with the order of categories in
+the table reflecting the priority: if a crate causes Undefined Behavior in one
+test and another test times out, it is categorized as Undefined Behavior.
