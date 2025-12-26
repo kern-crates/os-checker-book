@@ -40,3 +40,4 @@
     - [Priroda](./checker/KernMiri/Priroda.md)
 
 - [开发日志](./devlogs.md)
+  - [2025 年度总结](./devlogs/2025.md)
