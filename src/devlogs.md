@@ -70,6 +70,13 @@
 - [第 66 周]: Distributed-Verification WebUI 更新：增加 Kani 验证时间和数量分布图、支持 autoharnesses
 - [第 67 周]: 准备分享《编写 Rust 静态分析工具》；tag-std 发布 v0.4.1；distributed-verification 更新
 - [第 68 周]: Rust 编译器训练营课程分享《编写 Rust 静态分析工具》；distributed-verification 更新
+- [第 69 周]: os-checker：更新和修复 Miri 测例运行与结果、发布 plugin-cargo v0.1.7；book 更新：增加 KernMiri 和 Miri 笔记；distributed-verification：提交 GSoC2025 结题报告
+- [第 70 周]: 修复 Miri 报告的 ArceOS linked_list_r4l 问题代码，并对照当前 Rust for Linux 的链表实现
+- [第 71 周]: ArceOS 修复和问题排查；os-checker 更新
+- [第 72 周]: 星绽 RFC - 安全属性标注；os-checker 新增检查星绽；safety-tags 添加统计输出 JSON
+- [第 73 周]: safety-tool 生成 Rust for Linux 和星绽的安全属性统计信息；准备 14 号演讲《Rust 安全属性标注》slides
+- [第 74 周]: 演讲《Rust 安全属性标注》；safety-tool 更新
+- [第 75 周]: 发现和排查问题：ArceOS、星绽和 RAPx；更新 book：新增 Miri 论文阅读笔记
 
 [第 1-2 周]: https://github.com/os-checker/os-checker/blob/3fdf88db57403949f95c3034608481d64db80764/assets/development-logs.md
 [第 3 周]: https://github.com/os-checker/os-checker/discussions/15
@@ -133,3 +140,10 @@
 [第 66 周]: https://github.com/os-checker/os-checker/discussions/393
 [第 67 周]: https://github.com/os-checker/os-checker/discussions/394
 [第 68 周]: https://github.com/os-checker/os-checker/discussions/395
+[第 69 周]: https://github.com/orgs/os-checker/discussions/400
+[第 70 周]: https://github.com/orgs/os-checker/discussions/401
+[第 71 周]: https://github.com/orgs/os-checker/discussions/408
+[第 72 周]: https://github.com/orgs/os-checker/discussions/413
+[第 73 周]: https://github.com/orgs/os-checker/discussions/414
+[第 74 周]: https://github.com/orgs/os-checker/discussions/415
+[第 75 周]: https://github.com/orgs/os-checker/discussions/416
