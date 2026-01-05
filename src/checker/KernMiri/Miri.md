@@ -30,7 +30,7 @@ Paper: [Miri: Practical Undefined Behavior Detection for Rust](https://plf.inf.e
 
 ## Architecture Overview
 
-### Based On The Compiler
+Based On The Compiler:
 
 Reusing the entire rustc frontend and middle-end: the core interpreter is
 shared with the Rust compiler’s compile-time function evaluation infrastructure
@@ -49,9 +49,7 @@ pattern matching semantics
 Undefined Behavior, including enforcing Rust type invariants
 * turn off all MIR optimizations as those may remove UB
 
-### Value and Operand
-
-Operand:
+Value and Operand:
 * carry the type: the same mathematical integer may look very different in
 memory depending on the type it is stored at
 * two categories:
@@ -187,6 +185,8 @@ vector clocks represent by using a pointwise order—crucially, this order is no
 
 </details>
 
+### Core Algorithm
+
 Detect basic non-atomic data races:
 * On each read, we check which thread has most recently written to this
 location. We look up that thread in our current clock to ensure that this write
@@ -208,6 +208,8 @@ that lock, it merges the lock’s clock into its current clock (by applying a
 pointwise maximum)
 * use FastTrack and "POPL'17 Dynamic race detection for C++11"
   [ref](https://doi.org/10.1145/3009837.3009857) algorithm
+
+### Mixed Access
 
 Novel detection on mixed atomic and non-atomic accesses:
 * DataRaceALoc tracks, for each thread, when that thread performed its most
@@ -236,6 +238,8 @@ conflicts with this differently-sized read, so we report UB. Finally, for
 atomic writes, if the size field is ⊥ or does not match the size of the current
 access, we also report UB.
 
+### C++20 Weak Memory
+
 Handle C++20 weak memory rules:
 * coherence-ordered-before is introduced (很复杂)
 * SC (sequential consistent) fences are strengthened
@@ -247,6 +251,8 @@ Handle C++20 weak memory rules:
   modification-order relations
 
 ## Practicality
+
+### Optimizations
 
 More efficient representation of common cases:
 
@@ -269,14 +275,16 @@ can be on a Windows computer and invoke Miri with
 `--target x86_64-unknown-linux-gnu`, and Miri will build and run the code as-if
 it was running on Linux.
 
-OS target capabilities:
+### OS Target Capabilities
+
 * Linux: the best-supported target
 * all POSIX targets are reasonably well supported: actively tested on macOS,
 FreeBSD, and Illumos/Solaris
 * Windows is supported, but lacks some of the operations whose equivalent Linux
 functions are supported
 
-OS APIs capabilities:
+### OS APIs Capabilities
+
 * Files and file descriptor/handle manipulation:
   * basic file operations like open, read, write, and close
   * POSIX pipes and streaming sockets
@@ -308,7 +316,8 @@ OS APIs capabilities:
 
 ## Evaluation
 
-Large-scale compatibility:
+### Ecosystem Compatibility
+
 * tested 100778 out of 180k crates
 * took 11 days ≈ 1.9 CPU-years
 * tests: unit, integration and doc
@@ -325,3 +334,118 @@ assumptions about type layout
 Each crate is put into exactly one category, with the order of categories in
 the table reflecting the priority: if a crate causes Undefined Behavior in one
 test and another test times out, it is categorized as Undefined Behavior.
+
+### Performance
+
+Benchmark between Miri execution and native code execution:
+allocate a large array filled with the numbers from 0 to n (ranging from 50k to
+400k in steps of 50k), and then iterate over that array to do some arithmetic
+on each element, using hyperfine to gather the average and standard deviation.
+
+Miri: default settings (including Stacked Borrows); executed 3 times
+
+Native: disable all optimizations (`-Zmir-opt-level=0 -Copt-level=0`); executed
+at least 100 times (hyperfine automatically runs the program more often if the
+benchmark is very fast, aiming for around 3s of total benchmarking time)
+
+![](https://github.com/user-attachments/assets/75ff7635-5ec1-4acc-9042-c61d9302fd8f)
+
+Results:
+* For the lowest n, Miri is about 3000x slower than the native code.
+* For the highest n, the ratio is about 7000x.
+
+### Real-World Bugs
+
+* All bugs are fixed in the latest versions of the affected libraries.
+* Many bugs are found by found by other people using Miri either on their own
+codebase or on libraries that they care about.
+* Many widely-used crates and even the Rust standard library run Miri as part
+of their CI.
+
+## Related Work
+
+### Verification Tools
+
+like Kani:
+* require significant amount of annotation
+* no pointer provenance
+* no concurrency or weak memory support
+* conservatively rejects some no UB raw pointer usage
+
+### Sanitizers
+
+| Sanitizer        | Detection Ability                                                                     |
+|------------------|---------------------------------------------------------------------------------------|
+| AddressSanitizer | out-of-bounds, use-after-free                                                         |
+| LeakSanitizer    | memory leaks                                                                          |
+| MemorySanitizer  | uses of uninitialized memory                                                          |
+| ThreadSanitizer  | data races                                                                            |
+| UBSanitizer      | signed integer overflow, out-of-bounds bit shifts, use of misaligned or null pointers |
+
+Mechanism: a transformation pass adjusts the IR to insert extra checks and
+bookkeeping of the metadata needed for those checks.
+
+Pros: very faset (all have less than 10x overhead)
+
+Cons:
+* can't detect UB from frontend/language assumptions (optimizations, info loss)
+* have to compile and execute the code multiple times to find UB
+* lack checks like pointer provenance, and type invariants at runtime
+* lack weak memory implementation for rare non-deterministic behaviors
+
+### Valgrind
+
+Valgrind takes the normal binary produced by a regular build, and executes it
+with extra monitoring by dynamically instrumenting the machine code.
+
+Pros: 
+* very easy to use (no need to recompile the program with special flags)
+* 20x–50x overhead (much lower than Miri)
+
+Cons: The final assembly code contains even less information about source-level
+UB than the LLVM IR.
+
+### Other Interpreters
+
+Interpreters for detecting Undefined Behavior in C
+* TrustInSoft Analyzer
+  * formerly TIS interpreter
+* Runtime Verification’s RV-Match
+  * based on a formalization of the C11 semantics in the K framework
+  * K framework can turn a formal language semantics into an interpreter
+  automatically
+  * discrepancy on the ambiguous specification: it's developed entirely
+  independent of the main compiler projects (GCC and clang)
+  * unclear if even still being sold
+
+Both are commercial tools, so not much is publicly documented about their
+architecture, performance, and capabilities.
+
+By contrast, Miri is developed in close collaboration with the Rust compiler
+team, ensuring a consistent interpretation of the semantics of surface Rust.
+And Miri is the only Undefined Behavior checker for Rust.
+
+### Miri-Based Tools
+
+* [BorrowSan]: coupled Miri with an interpreter for LLVM IR to be able to run
+Miri on Rust programs that call C or C++ code, by means of compiling that C/C++
+code with clang and interpreting the generated LLVM IR.
+* SyRust and Crabtree stress-tests Rust libraries that contain unsafe code by
+automatically generating well-typed clients and executing them in Miri.
+* Rustlantis used Miri as an oracle to ensure that the automatically generated
+Rust programs (meant to fuzz the Rust compiler) do not contain UB.
+* Amazon used Miri as part of their validation effort for ShardStore.
+
+[BorrowSan]: https://borrowsanitizer.com/
+
+## Weakness And Future
+
+| Weakness                                                                      | Future                                                                                                                                                              |
+|-------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Low performance (several thousands of overhead)                               | alter architecture: build Miri as a sanitizer, with enough compiler support to avoid losing any relevant information along the compilation process                  |
+| cannot execute Rust programs that call native libraries via FFI               | call native code while still checking Undefined Behavior on the Rust side as much as possible                                                                       |
+| tricky to hit the problematic code path for highly non-deterministic programs | combining Miri with model checking techniques to be able to systematically explore all behaviors of a concurrent program that are permitted by the C++ memory model |
+
+And there are always more platform APIs to support; in particular, support for
+network sockets would let Miri cover much more of the asynchronous Rust
+ecosystem.
